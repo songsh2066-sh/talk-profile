@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "메인 프로젝트 · ERLink AI" };
 
 // 03 메인 프로젝트 (7분) — 내용 출처: 15분 발표 구성표 4장 (11/25 개편)
 //   발표 대본이 따로 없어서, 블록마다 굵은 글 = 말할 핵심, 작은 글 = 덧붙일 설명으로 씁니다.
-//   시간: 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 내가 만든 것 1분 50초 · 피드백과 결과 40초
+//   시간: 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 내가 만든 것 1분 50초 · 결과·한계·계획 40초
 
 // 누가 무엇을 하나 (사람과 AI의 역할)
 const flow = [
@@ -54,16 +54,17 @@ const built = [
 
 const tech = ["LangGraph", "FastAPI", "Next.js", "PostgreSQL · PostGIS · pgvector", "Redis", "ONNX Runtime", "faster-whisper", "MapLibre", "Docker Compose", "Cloudflare Tunnel", "GitHub Actions"];
 
-// 강사 피드백 → 바꾼 것
-const feedback = [
-  {
-    q: "버튼이 많다. 당황한 사람도 뭘 해야 할지 알아야 한다",
-    a: "신고 화면에서 누를 것은 ‘말하기’와 ‘글로 적기’ 둘. 질문은 한 화면에 둘, 숨을 안 쉬면 바로 가슴 압박 안내",
-    old: true,
-  },
-  { q: "음성으로 받아라 — 말할 때 위치도 함께 잡힌다", a: "누르고 말하면 위치가 자동으로 함께 전달. 받아 적은 글은 확인한 뒤 보내기(노트북 음성 인식)" },
-  { q: "신고 위치 주변에 보이는 게 없다", a: "학교·공원·지하철 출구 이름이 보이는 자세한 지도 + 위치 설명 한 줄, 지도를 ‘내 위치로’ 버튼" },
-  { q: "(스스로 12차 검토) 상황실도 할 일이 하나씩 보여야 한다", a: "기다리는 신고 먼저 → 추천 → 전화 확인 → 승인. 지적마다 재발 방지 시험을 붙임" },
+// 한계 (정직하게) → 앞으로 계획 (11/25 사용자: 피드백 목록 대신 한계와 계획)
+const limits = [
+  { t: "짧은 신고에 약함", d: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)" },
+  { t: "서울 안에서만 추천", d: "병원·도로·지도 자료가 서울만 있어서, 서울을 5km 넘게 벗어난 신고는 추천하지 않음" },
+  { t: "아직 현장 검증 전", d: "노트북 한 대에서 동작(꺼지면 멈춤), 실제 구급대원·상황요원이 써 보지 않음" },
+];
+const plans = [
+  { t: "과소평가율 더 낮추기 (지금 2.5%)", d: "위급 환자를 놓친 사례를 질환별로 모아 규칙과 학습 데이터를 보강하고, 더 보수적인 기준(위급 인식 95%·99%)에서 경보가 얼마나 느는지 함께 잼" },
+  { t: "신고 길이별 판단 기준", d: "짧은 신고는 더 일찍 위급으로 보게 운영점을 나눔" },
+  { t: "클라우드 서버로", d: "노트북 → 서버 이전, 모니터링(Grafana)과 장애 대응 연습" },
+  { t: "현장 의견 받기", d: "구급대원·상황요원 6~10명이 직접 써 보고, 고칠 점을 다시 시험으로" },
 ];
 
 const W = 1440;
@@ -221,37 +222,16 @@ export default function ERLink() {
         </ul>
       </section>
 
-      {/* ── 40초 · 피드백 반영과 확인한 결과 ── */}
-      <section aria-labelledby="fb-h" style={{ display: "grid", gap: 16 }}>
+      {/* ── 40초 · 확인한 결과 · 한계 · 앞으로 계획 ── */}
+      <section aria-labelledby="lim-h" style={{ display: "grid", gap: 16 }}>
         <div className="sec-row">
-          <h2 id="fb-h" className="sec-title">
+          <h2 id="lim-h" className="sec-title">
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              <span className="mono">40초</span> · 피드백 반영과 확인한 결과
+              <span className="mono">40초</span> · 확인한 결과 · 한계 · 앞으로 계획
             </span>
-            들은 피드백은 화면과 시험으로 바꿨습니다
+            확인한 것과, 아직 못 한 것
           </h2>
-          <span className="note">
-            신고 화면 전·후:{" "}
-            <a href={links.erlinkReportOld} target="_blank" rel="noreferrer">
-              예전 ↗
-            </a>{" "}
-            ·{" "}
-            <a href={links.erlinkReport} target="_blank" rel="noreferrer">
-              지금 ↗
-            </a>
-          </span>
         </div>
-        <ul className="fb">
-          {feedback.map((f) => (
-            <li key={f.q}>
-              <span className="fb-q">{f.q}</span>
-              <span className="fb-arrow" aria-hidden="true">
-                →
-              </span>
-              <span className="fb-a">{f.a}</span>
-            </li>
-          ))}
-        </ul>
         <div className="proof">
           <div>
             <span className="proof-v">
@@ -270,6 +250,30 @@ export default function ERLink() {
           <div>
             <span className="proof-v">12차</span>
             <span className="note">화면·흐름 검토 · 지적마다 재발 방지 시험</span>
+          </div>
+        </div>
+        <div className="lp">
+          <div className="lp-col is-wip">
+            <span className="cue is-wip">한계</span>
+            <ul>
+              {limits.map((l) => (
+                <li key={l.t}>
+                  <b>{l.t}</b>
+                  <span>{l.d}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="lp-col">
+            <span className="cue">앞으로 계획</span>
+            <ul>
+              {plans.map((p) => (
+                <li key={p.t}>
+                  <b>{p.t}</b>
+                  <span>{p.d}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
         <p className="say next">“ERLink로 큰 시스템을 끝까지 만들어 봤다면, 짧게 만든 프로젝트도 하나씩 보여 드리겠습니다.”</p>

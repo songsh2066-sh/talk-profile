@@ -247,12 +247,14 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 .built-top b { font-size: 16px; }
 .built-v { font-size: 13px; font-weight: 700; color: var(--ok); }
 .built-item p { font-size: 14px; line-height: 1.65; color: var(--ink-2); }
-.fb { list-style: none; margin: 0; padding: 0; display: grid; border-top: 2px solid var(--ink); }
-.fb li { display: grid; grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1.25fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); align-items: start; }
-.fb-q { font-size: 14px; color: var(--muted); }
-.fb-arrow { color: var(--ok); font-weight: 700; text-align: center; }
-.fb-a { font-size: 15px; font-weight: 600; line-height: 1.55; }
-@media (max-width: 640px) { .fb li { grid-template-columns: 1fr; gap: 4px; } .fb-arrow { display: none; } }
+.lp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .lp { grid-template-columns: 1fr; } }
+.lp-col { border-radius: 14px; padding: 18px 20px; background: var(--ok-soft); display: grid; gap: 10px; align-content: start; }
+.lp-col.is-wip { background: var(--wip-soft); }
+.lp-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.lp-col li { display: grid; gap: 2px; }
+.lp-col b { font-size: 15.5px; }
+.lp-col li span { font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
 
 /* ── 예비 캡처 (시연이 안 될 때) ── */
 .backup { border: 1px dashed var(--line-2); border-radius: 14px; background: var(--surface); }
