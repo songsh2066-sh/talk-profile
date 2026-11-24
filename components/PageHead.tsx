@@ -1,6 +1,6 @@
 import { neighbors } from "@/data/talk";
 
-// 프로젝트 페이지 머리: 상태 배지 · 순서 번호 · 배정 시간 · 제목 · 한 줄 소개
+// 프로젝트 페이지 머리: 상태 배지 · 순서 번호 · 제목 · 한 줄 소개 (11/25: 배정 시간은 화면에서 뺌)
 export default function PageHead({
   path,
   status,
@@ -28,7 +28,7 @@ export default function PageHead({
         ) : null}
         {current ? (
           <span className="mono note">
-            {current.no} · {meta ?? current.title} · {current.minutes}분
+            {current.no} · {meta ?? current.title}
           </span>
         ) : null}
       </div>

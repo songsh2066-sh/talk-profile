@@ -17,7 +17,7 @@ export default function Pager({ path }: { path: string }) {
       {next ? (
         <Link href={next.path} className="pager-btn is-next">
           <span className="mono pager-k">
-            다음 · {next.no} · {next.minutes}분
+            다음 · {next.no}
           </span>
           <b>{next.title} →</b>
         </Link>

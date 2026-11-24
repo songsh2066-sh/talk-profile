@@ -6,12 +6,12 @@ import { links } from "@/data/talk";
 
 export const metadata: Metadata = { title: "추가 프로젝트" };
 
-// 04 추가 프로젝트 (합계 3분) — 소개할 프로젝트는 구성표 5장이 정해지면 바꿉니다.
+// 04 추가 프로젝트 (합계 1분, 11/25 개편) — 소개할 프로젝트는 구성표 5장이 정해지면 바꿉니다.
 export default function Extra() {
   return (
     <main id="main" className="wrap page">
       <PageHead path="/extra" title="짧은 기간에 끝까지 만든 것들">
-        각 1분 30초 · 무엇을 만들었고, 무엇을 확인했는지만.
+        각 30초 · 무엇을 만들었고, 무엇을 확인했는지만.
       </PageHead>
 
       <section className="grid-2" aria-label="추가 프로젝트">
@@ -30,7 +30,7 @@ export default function Extra() {
           <div className="mini-body">
             <div className="mini-top">
               <h2>기억 탐정 AI</h2>
-              <span className="mono note">1분 30초</span>
+              <span className="mono note">30초</span>
             </div>
             <p className="body">기억나는 장면과 힌트 카드만으로 영화·애니메이션 후보를 근거와 함께 찾아 주는 AI.</p>
             <dl className="facts">
@@ -65,7 +65,7 @@ export default function Extra() {
           <div className="mini-body">
             <div className="mini-top">
               <h2>웹 이력서 플랫폼</h2>
-              <span className="mono note">1분 30초</span>
+              <span className="mono note">30초</span>
             </div>
             <p className="body">경력 원장 기반 AI 이력서 플랫폼의 제안서·PRD를 쓰고, 공개 이력서 페이지를 Next.js로 만들어 Vercel에 배포.</p>
             <dl className="facts">

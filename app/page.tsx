@@ -2,7 +2,7 @@ import Link from "next/link";
 import Pager from "@/components/Pager";
 import { links, steps } from "@/data/talk";
 
-// 01 홈 · 자기소개 (1분)
+// 01 홈 · 자기소개 (1분) — 오늘 발표 목록은 data/talk.ts 의 순서·시간
 export default function Home() {
   return (
     <main id="main">
@@ -19,8 +19,8 @@ export default function Home() {
               믿을 수 있는 AI 만들기
             </p>
             <p className="hero-intro">
-              외부 AI 없이 작은 모델로 실제 서비스를 만들고, 개선은 같은 평가셋의 숫자로 확인합니다. 오늘은 서울 메이트와 ERLink를
-              중심으로 소개합니다.
+              외부 AI 없이 작은 모델로 실제 서비스를 만들고, 개선은 같은 평가셋의 숫자로 확인합니다. 오늘은 서울 메이트와, 메인
+              프로젝트 ERLink를 라이브로 보여 드립니다.
             </p>
             <div className="hero-cta">
               <Link className="btn btn-ink" href="/midterm">
@@ -79,11 +79,11 @@ export default function Home() {
           </div>
           <div className="metric">
             <dt className="metric-v">
-              <span className="hl">637</span>
+              <span className="hl">669</span>
             </dt>
             <dd>
               <span className="metric-l">ERLink 자동 시험</span>
-              <span className="metric-s">Python 551 · 화면 E2E 86 · CI 통과</span>
+              <span className="metric-s">Python 565 · 화면 104 · 통합 39 · CI 통과</span>
             </dd>
           </div>
           <div className="metric">
@@ -123,7 +123,7 @@ export default function Home() {
             <li className="principle">
               <span className="mono principle-n">04</span>
               <b className="principle-t">끝까지 배포한다</b>
-              <p className="principle-b">Vercel · Azure · Docker Compose · GitHub Actions CI.</p>
+              <p className="principle-b">Vercel · Azure · Docker Compose · Cloudflare Tunnel(erlink.songsh.cloud) · GitHub Actions CI.</p>
             </li>
           </ol>
         </section>

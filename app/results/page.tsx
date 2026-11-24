@@ -18,7 +18,7 @@ function Bar({ label, value, pct, after }: { label: string; value: string; pct: 
   );
 }
 
-// 05 성과 · 마무리 (4분) — 내용 출처: 15분 발표 구성표 v3 6장
+// 05 성과 · 마무리 (3분) — 내용 출처: 15분 발표 구성표 6장 (11/25: 1분 30초 · 1분 · 30초)
 export default function Results() {
   return (
     <>
@@ -26,7 +26,7 @@ export default function Results() {
         <PageHead path="/results" title="무엇을 달성했고, 어떻게 확인했나" />
 
         <section aria-label="가장 중요한 성과" style={{ display: "grid", gap: 14 }}>
-          <Cue time="2분">가장 중요한 성과</Cue>
+          <Cue time="1분 30초">가장 중요한 성과</Cue>
           <div className="grid-2">
             <div className="panel">
               <div className="sec-row">
@@ -68,20 +68,20 @@ export default function Results() {
               <b>고치면 다른 곳이 깨지는 반복을 끊었다</b>
               <p>
                 ERLink: 지적 항목만 고치던 방식을 원칙을 검사하는 자동 시험으로 바꿈(추천 기록 714건). CI와 같은 7단계 푸시 전 점검으로
-                8차 검토 뒤 CI 통과.
+                12차 검토까지 자동 시험 669개 · CI 통과.
               </p>
             </div>
           </div>
         </section>
 
         <section aria-label="남은 과제" style={{ display: "grid", gap: 14 }}>
-          <Cue time="1분" tone="wip">
+          <Cue time="30초" tone="wip">
             남은 과제
           </Cue>
           <ul className="todo">
             <li>여러 곳 비교 질문 → 코드 순위 계산</li>
             <li>짧은 신고 위급 인식 69% → 신고 길이별 기준</li>
-            <li>서버 배포</li>
+            <li>노트북 → 클라우드 서버로 옮기기</li>
             <li>현장 의견 받기</li>
           </ul>
         </section>
