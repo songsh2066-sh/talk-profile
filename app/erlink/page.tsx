@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "메인 프로젝트 · ERLink AI" };
 
 // 03 메인 프로젝트 (7분) — 내용 출처: 15분 발표 구성표 4장 (11/25 개편)
 //   발표 대본이 따로 없어서, 블록마다 굵은 글 = 말할 핵심, 작은 글 = 덧붙일 설명으로 씁니다.
-//   발표 시간 배분(화면에는 표시 안 함): 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 배운 것을 이렇게 썼습니다 1분 50초 · 한계와 다음 단계 40초
+//   발표 시간 배분(화면에는 표시 안 함): 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 기술과 결과 1분 50초 · 한계와 다음 단계 40초
 
 // 누가 무엇을 하나 (사람과 AI의 역할)
 const flow = [
@@ -32,7 +32,8 @@ const demo = [
 const agents = ["중증도", "빈 병상", "도착 시간", "병원 역량", "포화도", "근거", "순위", "검토", "사람 승인", "기록"];
 const HUMAN = "사람 승인";
 
-// 11/25 사용자 결정: '내가 만든 것' → '교육에서 배운 것 → ERLink에 적용한 방법 → 확인한 결과'
+// 11/25 사용자 결정: '내가 만든 것' → '기술 → ERLink에 적용한 방법 → 확인한 결과'
+//   (11/26: 화면에서 '교육에서 배운 것' 표현은 빼고, 마무리 한 줄에만 교육 언급을 남김 — 사용자 결정)
 //   (11/25: ERLink 에서는 중간평가에서 쓴 것을 설명하지 않음 — 사용자 결정)
 const learned = [
   {
@@ -205,14 +206,14 @@ export default function ERLink() {
 
       <Backup title="시연이 안 될 때 · 캡처 6장" shots={backup} />
 
-      {/* ── 배운 것을 이렇게 썼습니다 (11/25) ── */}
+      {/* ── 기술과 결과 (11/25, 11/26 이름 변경) ── */}
       <section aria-labelledby="built-h" style={{ display: "grid", gap: 20 }}>
         <div className="sec-row">
           <h2 id="built-h" className="sec-title">
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              배운 것을 이렇게 썼습니다
+              기술과 결과
             </span>
-            교육에서 배운 기술로 ERLink를 만들었습니다
+            교육에서 배운 RAG·파인튜닝·하이브리드를, 사람 생명이 걸린 문제에 맞게 더 엄격하게 적용했습니다
           </h2>
           <span className="note">개인 프로젝트 · 기획부터 배포까지</span>
         </div>
@@ -222,7 +223,7 @@ export default function ERLink() {
               <b>Agent AI</b>
               <span className="mono note">LangGraph · 에이전트 10개를 한 흐름으로</span>
             </div>
-            <span className="learn-tag">배운 것 · Multi-Agent</span>
+            <span className="learn-tag">Multi-Agent</span>
           </div>
           <ol className="agentai-flow">
             {agents.map((a) => (
@@ -235,9 +236,9 @@ export default function ERLink() {
             에이전트마다 한 가지 일만 맡아 단계마다 근거를 남기고, <b>‘사람 승인’에서 멈춰 병원 응답과 구급대원 승인 없이는 확정되지 않습니다.</b>
           </p>
         </div>
-        <div className="learned" role="table" aria-label="교육에서 배운 것을 ERLink에 적용한 방법">
+        <div className="learned" role="table" aria-label="ERLink에 쓴 기술과 확인한 결과">
           <div className="learned-row is-head" role="row">
-            <span role="columnheader">교육에서 배운 것</span>
+            <span role="columnheader">기술</span>
             <span role="columnheader">ERLink에 적용한 방법</span>
             <span role="columnheader">확인한 결과</span>
           </div>
@@ -265,7 +266,6 @@ export default function ERLink() {
             </div>
           ))}
         </div>
-        <p className="say next">“교육에서 배운 RAG·파인튜닝·하이브리드를, 사람 생명이 걸린 문제에 맞게 더 엄격하게 적용했습니다.”</p>
       </section>
 
       {/* ── 한계와 다음 단계 (11/25) ── */}
