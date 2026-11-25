@@ -6,59 +6,73 @@ import { links } from "@/data/talk";
 
 export const metadata: Metadata = { title: "성과 · 마무리" };
 
-function Bar({ label, value, pct, after }: { label: string; value: string; pct: number; after?: boolean }) {
-  return (
-    <div className={after ? "bar is-after" : "bar"}>
-      <span>{label}</span>
-      <div className="bar-track" aria-hidden="true">
-        <div className="bar-fill" style={{ width: `${pct}%` }} />
-      </div>
-      <span className="bar-v">{value}</span>
-    </div>
-  );
-}
+// 05 성과 · 마무리 (3분) — 내용 출처: 15분 발표 구성표 6장
+//   11/26 개편 (도안: 발표용 프로필 사이트 시안 ResultsV3):
+//   프로젝트 페이지는 '시연 → 결과'까지, 성과 탭은 돌아보고 앞을 말하는 곳.
+//   막대 그래프 대신 숫자 두 개 · 해결한 문제 2개 · 한계와 다음 단계(ERLink 3 + 서울 메이트 1) · 마무리
+//   서울 메이트 수치는 서비스 중인 v4 기준(같은 100문항, 0% → 70%)
 
-// 05 성과 · 마무리 (3분) — 내용 출처: 15분 발표 구성표 6장 (11/25: 1분 30초 · 1분 · 30초)
-//   11/26: 서울 메이트 수치를 서비스 중인 v4 기준(같은 100문항: 0% → 55% → 70%, RAG만 대비 McNemar p=0.03)으로,
-//          안전 시험은 결과 파일대로 9/10(1개 사람 판정), 남은 과제는 ERLink 페이지 다음 단계와 맞춤
+// 두 프로젝트로 확인한 것
+const keys = [
+  { t: "서울 메이트 · 사실 정확도", v: "0% → 70%", d: "작은 모델 혼자 → 검색 자료(RAG) + 파인튜닝 · 같은 100문항 · 지어낸 숫자 0%" },
+  { t: "ERLink · 위급 환자 과소평가", v: "11.9% → 2.5%", d: "규칙만 → 규칙 + 파인튜닝 모델 · 서울 119 신고 평가용 약 1.87만 건" },
+];
+
+// 아직 못 한 것 → 다음에 할 것 (ERLink 페이지의 한계와 다음 단계 + 서울 메이트 한 줄)
+const nexts = [
+  {
+    p: "ERLink",
+    lt: "짧은 신고에 약함",
+    ld: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)",
+    pt: "과소평가율 더 낮추기",
+    pd: "놓친 사례를 질환별로 모아 규칙과 학습 데이터를 보강하고, 짧은 신고는 더 일찍 위급으로",
+  },
+  {
+    p: "ERLink",
+    lt: "병원 연결은 아직 가정",
+    ld: "오늘 시연의 병원 응답은 발표자가 대신 누름",
+    pt: "병원과 바로 연결",
+    pd: "병원 화면에서 수용 요청을 받아 승인·거절, 전화 없이 연결",
+  },
+  {
+    p: "ERLink",
+    lt: "노트북 한 대 · 서울에서만 · 현장 검증 전",
+    ld: "꺼지면 멈추고, 자료가 서울뿐이고, 실제 구급대원이 써 보지 않음",
+    pt: "클라우드로 옮기고 현장에서 검증",
+    pd: "서버 이전과 모니터링, 구급대원·상황요원 6~10명 의견 받기",
+  },
+  {
+    p: "서울 메이트",
+    lt: "여러 곳 비교 질문에 약함",
+    ld: "“어디가 제일 한산해?” 같은 질문은 0~2/6",
+    pt: "비교 질문 보강",
+    pd: "장소별 값을 코드가 먼저 비교하고, 모델은 결과를 설명만",
+  },
+];
+
 export default function Results() {
   return (
     <>
       <main id="main" className="wrap page">
         <PageHead path="/results" title="무엇을 달성했고, 어떻게 확인했나" />
 
-        <section aria-label="가장 중요한 성과" style={{ display: "grid", gap: 14 }}>
-          <Cue time="1분 30초">가장 중요한 성과</Cue>
+        <section aria-label="두 프로젝트로 확인한 것" style={{ display: "grid", gap: 14 }}>
+          <Cue>두 프로젝트로 확인한 것</Cue>
           <div className="grid-2">
-            <div className="panel">
-              <div className="sec-row">
-                <b>서울 메이트 · 사실 정확도</b>
-                <span className="delta">0% → 70%</span>
+            {keys.map((k) => (
+              <div key={k.t} className="panel key-result">
+                <span className="key-t">{k.t}</span>
+                <span className="mono key-v">
+                  <span className="hl">{k.v}</span>
+                </span>
+                <span className="key-d">{k.d}</span>
               </div>
-              <div className="bars" role="img" aria-label="모델 혼자 0%, 검색 자료(RAG)를 붙이면 55%, 파인튜닝 모델에 검색 자료를 붙이면 70%">
-                <Bar label="모델 혼자" value="0%" pct={1} />
-                <Bar label="+ 검색 자료" value="55%" pct={55} />
-                <Bar label="+ 파인튜닝" value="70%" pct={70} after />
-              </div>
-              <p className="note">같은 100문항 · 지어낸 숫자 0% · RAG만 대비 p=0.03 · 안전 시험 9/10 (1개는 사람 판정)</p>
-            </div>
-            <div className="panel">
-              <div className="sec-row">
-                <b>ERLink · 위급 환자 과소평가</b>
-                <span className="delta">−9.4%p</span>
-              </div>
-              {/* 막대 길이는 11.9% 를 79% 폭으로 맞춘 비율 (2.5% → 17%) */}
-              <div className="bars" role="img" aria-label="규칙만 11.9%, 규칙과 모델 2.5%">
-                <Bar label="규칙만" value="11.9%" pct={79} />
-                <Bar label="규칙 + 모델" value="2.5%" pct={17} after />
-              </div>
-              <p className="note">서울 119 신고 평가용 약 1.87만 건 · 위급 인식 53% → 90% · 추천 근거 인용률 100%</p>
-            </div>
+            ))}
           </div>
         </section>
 
         <section aria-label="내가 맡아 해결한 문제" style={{ display: "grid", gap: 14 }}>
-          <Cue time="1분">내가 맡아 해결한 문제</Cue>
+          <Cue>내가 맡아 해결한 문제</Cue>
           <div className="ideas">
             <div className="idea">
               <b>학습 데이터의 버그를 찾았다</b>
@@ -77,16 +91,38 @@ export default function Results() {
           </div>
         </section>
 
-        <section aria-label="남은 과제" style={{ display: "grid", gap: 14 }}>
-          <Cue time="30초" tone="wip">
-            남은 과제
-          </Cue>
-          <ul className="todo">
-            <li>짧은 신고 위급 인식 69% → 과소평가율 더 낮추기</li>
-            <li>병원과 바로 연결 (지금은 응답을 대신 누름)</li>
-            <li>클라우드로 옮기고 현장에서 검증</li>
-            <li>서울 메이트 · 여러 곳 비교 질문 보강</li>
-          </ul>
+        <section aria-labelledby="res-lim-h" style={{ display: "grid", gap: 16 }}>
+          <div className="sec-row">
+            <h2 id="res-lim-h" className="sec-title">
+              <span className="cue" style={{ display: "block", marginBottom: 4 }}>
+                한계와 다음 단계
+              </span>
+              아직 못 한 것과, 다음에 할 것
+            </h2>
+          </div>
+          <div className="nexts" role="table" aria-label="아직 못 한 것과 다음에 할 것">
+            <div className="nexts-row is-head" role="row">
+              <span role="columnheader">아직 못 한 것</span>
+              <span aria-hidden="true" />
+              <span role="columnheader">다음에 할 것</span>
+            </div>
+            {nexts.map((n) => (
+              <div key={n.lt} className="nexts-row" role="row">
+                <div className="nexts-lim" role="cell">
+                  <span className="proj-tag">{n.p}</span>
+                  <b>{n.lt}</b>
+                  <span>{n.ld}</span>
+                </div>
+                <span className="nexts-arrow is-tagged" aria-hidden="true">
+                  →
+                </span>
+                <div className="nexts-plan is-tagged" role="cell">
+                  <b>{n.pt}</b>
+                  <span>{n.pd}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <Pager path="/results" />

@@ -62,7 +62,7 @@ export default function Home() {
               {steps.map((s) => (
                 <li key={s.path}>
                   <Link href={s.path}>
-                    <span className="mono agenda-t">{s.range}</span>
+                    <span className="mono agenda-t">{s.no}</span>
                     <span>
                       <b>{s.title}</b>
                       <span className="sub">{s.summary}</span>
@@ -79,7 +79,7 @@ export default function Home() {
         <section aria-labelledby="built-h" style={{ display: "grid", gap: 16 }}>
           <div className="sec-row">
             <h2 id="built-h" className="sec-title">
-              교육 기간 동안 만든 프로젝트
+              교육 기간 만든 프로젝트
             </h2>
             <span className="note">외부 AI → 내 서버·내 모델</span>
           </div>
