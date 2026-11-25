@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "메인 프로젝트 · ERLink AI" };
 
 // 03 메인 프로젝트 (7분) — 내용 출처: 15분 발표 구성표 4장 (11/25 개편)
 //   발표 대본이 따로 없어서, 블록마다 굵은 글 = 말할 핵심, 작은 글 = 덧붙일 설명으로 씁니다.
-//   시간: 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 내가 만든 것 1분 50초 · 결과·한계·계획 40초
+//   시간: 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 배운 것을 이렇게 썼습니다 1분 50초 · 결과·한계·계획 40초
 
 // 누가 무엇을 하나 (사람과 AI의 역할)
 const flow = [
@@ -29,30 +29,62 @@ const demo = [
 ];
 
 // 판단 단계 (ERLink LangGraph: triage → bed → route → capability → saturation → protocol → supervisor → critic → 승인 → 기록)
-const agents = [
-  { n: "01", t: "중증도", d: "규칙 + KoELECTRA" },
-  { n: "02", t: "빈 병상", d: "공공 API 10분 수집" },
-  { n: "03", t: "도착 시간", d: "OSRM + 시간대 계수" },
-  { n: "04", t: "병원 역량", d: "시술·외상·소아센터" },
-  { n: "05", t: "포화도", d: "요일·시간대 프로필" },
-  { n: "06", t: "근거", d: "법령·지침 RAG" },
-  { n: "07", t: "순위", d: "가중 점수 + 원칙 규칙" },
-  { n: "08", t: "검토", d: "Critic 경고" },
-  { n: "09", t: "사람 승인", d: "병원 응답 + 중단점", human: true },
-  { n: "10", t: "기록", d: "SHA-256 해시 체인" },
-];
+const agents = ["중증도", "빈 병상", "도착 시간", "병원 역량", "포화도", "근거", "순위", "검토", "사람 승인", "기록"];
+const HUMAN = "사람 승인";
 
-// 내가 만든 것 (v = 대표 숫자)
-const built = [
-  { t: "데이터 수집", v: "10분", d: "응급실 병상 공공 API를 10분마다 수집(노트북 상시). 병원 역량·외상센터·소아센터 목록, AI Hub 119 신고 8.6만 건으로 학습·평가." },
-  { t: "중증도 AI", v: "14.7MB · 3ms", d: "규칙 + KoELECTRA-small 파인튜닝. 위급 환자를 낮게 보는 실수에 큰 벌점을 주고, 모델은 규칙보다 등급을 올리기만 합니다. ONNX int8로 노트북 CPU에서." },
-  { t: "근거 RAG", v: "인용 100%", d: "법령 6개와 응급 지침을 조문 단위로 BM25 + e5 임베딩(RRF) 검색. 추천마다 “왜 이 병원인지” 근거 조문을 붙입니다." },
-  { t: "음성 신고", v: "로컬 STT", d: "faster-whisper(small)가 노트북에서 받아 적고, 신고자가 확인한 뒤 보냅니다. 받아 적은 글로 판단한 위급도가 정답 녹취로 판단한 것과 81.5% 같음(광주 200건)." },
-  { t: "지도 · 위치", v: "외부 요청 0", d: "OpenStreetMap으로 서울 지도를 직접 만들어 외부 지도 서버를 부르지 않습니다(신고 위치가 새지 않음). ‘종각역 1번 출구 바로 앞’ 같은 위치 설명 한 줄." },
-  { t: "안전 · 운영", v: "시험 669", d: "개인정보 가림, 로그인, 경고 확인, 감사 기록. Cloudflare Tunnel로 공개 주소, 자동 시험(Python 565·화면 104) + 통합 39 + GitHub Actions CI." },
+// 11/25 사용자 결정: '내가 만든 것' → '교육에서 배운 것 → ERLink에 적용한 방법 → 확인한 결과'
+//   (from = 중간평가 서울 메이트에서 먼저 써 본 것 — 중간평가 3분과 이어지게)
+const learned = [
+  {
+    t: "파인튜닝",
+    from: "중간평가: Qwen3 LoRA",
+    how: ["119 신고 8.6만 건으로 ", "KoELECTRA를 중증도 분류에 파인튜닝", ". 위급 환자를 낮게 보는 실수에 더 큰 벌점을 줬습니다."],
+    chips: ["KoELECTRA-small", "비대칭 손실", "AI Hub 119 신고"],
+    v: "11.9→2.5%",
+    vl: "위급 환자 과소평가",
+    hl: true,
+  },
+  {
+    t: "RAG",
+    from: "중간평가: Qdrant · bge-m3",
+    how: ["법령 6개와 응급 지침을 조문 단위로 나눠 ", "단어 검색 + 뜻 검색을 함께", " 쓰고 순위를 합쳤습니다. 추천마다 근거 조문이 붙습니다."],
+    chips: ["BM25 + e5 임베딩", "RRF", "pgvector"],
+    v: "100%",
+    vl: "추천 근거 조문 인용률",
+  },
+  {
+    t: "하이브리드 설계",
+    from: "중간평가: 모델 + RAG + 코드 계산",
+    how: ["규칙이 기본이고 ", "모델은 등급을 올리기만", " 합니다. 도착 시간과 점수 같은 계산은 코드가 맡습니다."],
+    chips: ["규칙 + 모델", "OSRM 도로망", "가중 점수"],
+    v: "0건",
+    vl: "위급 환자를 경증으로 본 경우",
+  },
+  {
+    t: "소버린 AI · 로컬 모델",
+    from: "중간평가: Ollama · 내 PC 모델",
+    how: ["모델을 줄여 ", "노트북 CPU에서 판단", "하고, 음성 인식과 지도도 노트북 안에서 돌립니다. 환자 정보가 외부 AI 서버로 나가지 않습니다."],
+    chips: ["ONNX int8", "faster-whisper", "자체 서울 지도"],
+    v: "14.7MB · 3ms",
+    vl: "중증도 모델 크기 · 판단 시간",
+  },
+  {
+    t: "평가로 증명",
+    from: "중간평가: 같은 100문항으로 비교",
+    how: ["학습에 쓰지 않은 평가셋을 먼저 떼어 두고, 바꿀 때마다 ", "같은 기준으로 다시 쟀습니다", "."],
+    chips: ["서울 평가용 1.87만 건", "원칙 검사 714건"],
+    v: "53→90%",
+    vl: "위급 환자 알아본 비율",
+  },
+  {
+    t: "배포 · 운영",
+    from: "중간평가: n8n · LiteLLM · Azure",
+    how: ["서비스를 ", "Docker Compose로 한 번에", " 띄우고, 올릴 때마다 시험이 돌게 했습니다. 공개 주소는 Cloudflare Tunnel로 붙였습니다."],
+    chips: ["FastAPI · Next.js", "PostgreSQL · Redis", "GitHub Actions"],
+    v: "669",
+    vl: "자동 시험 · CI 통과",
+  },
 ];
-
-const tech = ["LangGraph", "FastAPI", "Next.js", "PostgreSQL · PostGIS · pgvector", "Redis", "ONNX Runtime", "faster-whisper", "MapLibre", "Docker Compose", "Cloudflare Tunnel", "GitHub Actions"];
 
 // 한계 (정직하게) → 앞으로 계획 (11/25 사용자: 피드백 목록 대신 한계와 계획)
 const limits = [
@@ -184,42 +216,79 @@ export default function ERLink() {
 
       <Backup title="시연이 안 될 때 · 캡처 6장" shots={backup} />
 
-      {/* ── 1분 50초 · 내가 만든 것 ── */}
-      <section aria-labelledby="built-h" style={{ display: "grid", gap: 16 }}>
+      {/* ── 1분 50초 · 배운 것을 이렇게 썼습니다 (11/25) ── */}
+      <section aria-labelledby="built-h" style={{ display: "grid", gap: 20 }}>
         <div className="sec-row">
           <h2 id="built-h" className="sec-title">
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              <span className="mono">1분 50초</span> · 내가 만든 것
+              <span className="mono">1분 50초</span> · 배운 것을 이렇게 썼습니다
             </span>
-            기획부터 배포까지 혼자 만들었습니다
+            교육에서 배운 기술로 ERLink를 만들었습니다
           </h2>
-          <span className="note">개인 프로젝트 · 역할별 Agent가 차례로 판단하고 단계마다 근거를 남김</span>
+          <span className="note">개인 프로젝트 · 기획부터 배포까지</span>
         </div>
-        <ol className="agents is-10">
-          {agents.map((a) => (
-            <li key={a.n} className={a.human ? "agent is-human" : "agent"}>
-              <span className="agent-n">{a.n}</span>
-              <b>{a.t}</b>
-              <span className="agent-t">{a.d}</span>
-            </li>
-          ))}
-        </ol>
-        <div className="built">
-          {built.map((b) => (
-            <div key={b.t} className="built-item">
-              <div className="built-top">
-                <b>{b.t}</b>
-                <span className="mono built-v">{b.v}</span>
+        <p className="body" style={{ marginTop: -8 }}>
+          중간평가(서울 메이트)에서 먼저 써 본 방식을, 더 크고 위험한 문제에 그대로 확장했습니다.
+        </p>
+        <div className="panel agentai">
+          <div className="sec-row">
+            <div className="agentai-t">
+              <b>Agent AI</b>
+              <span className="mono note">LangGraph · 에이전트 10개를 한 흐름으로</span>
+            </div>
+            <span className="learn-tag">배운 것 · Multi-Agent</span>
+          </div>
+          <ol className="agentai-flow">
+            {agents.map((a) => (
+              <li key={a} className={a === HUMAN ? "is-human" : undefined}>
+                {a}
+              </li>
+            ))}
+          </ol>
+          <div className="agentai-pts">
+            <p>
+              <b>한 에이전트 = 한 가지 일.</b> 단계별로 따로 시험할 수 있습니다.
+            </p>
+            <p>
+              <b>단계마다 근거를 남김.</b> 추천이 왜 나왔는지 거꾸로 따라갑니다.
+            </p>
+            <p>
+              <b>중단점에서 멈춤.</b> 병원 응답과 구급대원 승인 없이는 확정되지 않습니다.
+            </p>
+          </div>
+        </div>
+        <div className="learned" role="table" aria-label="교육에서 배운 것을 ERLink에 적용한 방법">
+          <div className="learned-row is-head" role="row">
+            <span role="columnheader">교육에서 배운 것</span>
+            <span role="columnheader">ERLink에 적용한 방법</span>
+            <span role="columnheader">확인한 결과</span>
+          </div>
+          {learned.map((l) => (
+            <div key={l.t} className="learned-row" role="row">
+              <div className="learned-what" role="cell">
+                <b>{l.t}</b>
+                <span>{l.from}</span>
               </div>
-              <p>{b.d}</p>
+              <div className="learned-how" role="cell">
+                <p>
+                  {l.how[0]}
+                  <b>{l.how[1]}</b>
+                  {l.how[2]}
+                </p>
+                <ul className="chips" aria-label="사용 기술">
+                  {l.chips.map((c) => (
+                    <li key={c}>{c}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="learned-v" role="cell">
+                <span className="mono learned-num">{l.hl ? <span className="hl">{l.v}</span> : l.v}</span>
+                <span className="note">{l.vl}</span>
+              </div>
             </div>
           ))}
         </div>
-        <ul className="chips" aria-label="사용 기술">
-          {tech.map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
+        <p className="say next">“중간평가에서 익힌 RAG·파인튜닝·하이브리드를, 사람 생명이 걸린 문제에 맞게 더 엄격하게 적용했습니다.”</p>
       </section>
 
       {/* ── 40초 · 확인한 결과 · 한계 · 앞으로 계획 ── */}

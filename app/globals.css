@@ -256,6 +256,34 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 .lp-col b { font-size: 15.5px; }
 .lp-col li span { font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
 
+/* ── ERLink '배운 것을 이렇게 썼습니다' (11/25) — 배운 것 → 적용 → 결과 ── */
+.agentai { padding: 22px 24px; gap: 14px; }
+.agentai-t { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.agentai-t b { font-size: 19px; }
+.learn-tag { font-size: 12.5px; font-weight: 700; color: var(--muted); background: var(--paper-2); border-radius: 999px; padding: 4px 10px; }
+.agentai-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 14px; }
+.agentai-flow li { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; position: relative; }
+.agentai-flow li + li::before { content: "→"; position: absolute; left: -17px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 12px; }
+.agentai-flow li.is-human { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); font-weight: 700; }
+.agentai-pts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 14px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.agentai-pts b { color: var(--ink); }
+.learned { display: grid; }
+.learned-row { display: grid; grid-template-columns: 220px minmax(0, 1fr) 190px; gap: 20px; padding: 18px 4px; border-bottom: 1px solid var(--line); align-items: start; }
+.learned-row.is-head { padding: 0 4px 10px; font-size: 12px; font-weight: 700; color: var(--muted); border-bottom: 2px solid var(--ink); }
+.learned-row.is-head span:last-child { text-align: right; }
+.learned-what { display: grid; gap: 6px; }
+.learned-what b { font-size: 16px; }
+.learned-what span { font-size: 12.5px; font-weight: 700; color: var(--ok); }
+.learned-how { display: grid; gap: 8px; }
+.learned-how p { font-size: 15px; line-height: 1.6; }
+.learned-v { display: grid; gap: 2px; text-align: right; }
+.learned-num { font-size: 24px; font-weight: 700; line-height: 1.2; }
+@media (max-width: 860px) {
+  .learned-row { grid-template-columns: 1fr; gap: 8px; }
+  .learned-row.is-head { display: none; }
+  .learned-v { text-align: left; }
+}
+
 /* ── 예비 캡처 (시연이 안 될 때) ── */
 .backup { border: 1px dashed var(--line-2); border-radius: 14px; background: var(--surface); }
 .backup > summary { cursor: pointer; padding: 14px 18px; font-weight: 700; font-size: 14.5px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
