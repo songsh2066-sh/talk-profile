@@ -371,3 +371,23 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 .mt-limits li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 4px; }
 .mt-limits b { font-size: 16px; color: var(--wip); }
 .mt-limits span { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+
+/* ── 중간평가 11/26 개편: 시연 두 장 · 시연 순서 캡처 · 최종 성능표 ── */
+.mt-pair .shot.is-pick { border-color: var(--ok); }
+.mt-pair .shot.is-pick figcaption, .mt-pair .shot.is-pick .cap { color: var(--ok); font-weight: 700; }
+.mt-pair .shot img { width: 100%; height: auto; display: block; }
+.mt-backup { padding: 0 18px 18px; display: grid; gap: 14px; }
+.mt-backup-top { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 720px) { .mt-backup-top { grid-template-columns: 1fr; } }
+.mt-backup a.shot { display: grid; text-decoration: none; color: inherit; }
+.mt-backup a.shot:hover { border-color: var(--ink); }
+.mt-backup a.shot img { width: 100%; height: auto; display: block; }
+.mt-backup .cap { font-size: 12.5px; color: var(--ink-2); padding: 10px 12px; border-top: 1px solid var(--line); }
+.result-table { min-width: 680px; }
+.result-table caption { caption-side: top; text-align: left; padding: 14px 14px 4px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.result-table .r { text-align: right; }
+.result-table td.strong { font-weight: 700; }
+.result-table td.warn { color: var(--wip); font-weight: 700; }
+.result-table tr.is-pick th, .result-table tr.is-pick td { background: var(--ok-soft); font-weight: 700; }
+.result-table tr.is-pick th { color: var(--ok); }
+.mt-takeaway { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; font-size: 17px; font-weight: 700; line-height: 1.6; }

@@ -2,17 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import PageHead, { Cue } from "@/components/PageHead";
 import Pager from "@/components/Pager";
-import Backup, { type Shot } from "@/components/Backup";
 import { links } from "@/data/talk";
 
 export const metadata: Metadata = { title: "중간평가 · 서울 메이트" };
 
-// 02 중간평가 (3분) — 11/25 개편: ERLink 페이지와 같은 틀 (도안: 발표용 프로필 사이트 시안 MidtermV2)
+// 02 중간평가 (3분) — 11/26 개편 (도안: 발표용 프로필 사이트 시안 MidtermV2)
+//   목표 → 전체 흐름 → 라이브 시연 4단계(qwen3 자료 없음 vs seoulmate) → 결과(최종 성능표 4줄) → ERLink 로
 //   발표 대본이 따로 없어서, 블록마다 굵은 글 = 말할 핵심, 작은 글 = 덧붙일 설명으로 씁니다.
-//   발표 시간 배분(화면에는 표시 안 함): 문제 20초 · 흐름 30초 · 라이브 시연 1분 · 세 단계 30초 · 배운 것 40초 · 한계 20초
-//   수치 출처: Lite LLM project/results (final_eval_20261123172213/score_v2_summary.md, n8n/rag_eval_summary_20261120022907.csv,
-//             safety_20261122153933.txt), data/ft/seoulmate_ft_report_20261123162932.md
-//   응답 시간은 100문항 연속 측정 평균 (화면 캡처의 응답 시간은 모델을 바꾼 직후라 로딩 시간이 섞여 있어 쓰지 않음)
+//   발표 시간 배분(화면에는 표시 안 함): 목표 20초 · 흐름 20초 · 라이브 시연 1분 30초 · 결과 40초 · 마무리 10초
+//   성능표 출처(같은 100문항 · 공정 채점 v2): Lite LLM project/results
+//     - 자료 없음(qwen3:1.7b · seoulmate-1.7b): final_eval_20261125235823 (data/ft/final_eval100_noctx_20261125235705.jsonl)
+//     - 검색 자료(RAG) 붙임(qwen3:1.7b · seoulmate-1.7b): final_eval_20261123172213
+//   seoulmate-1.7b = 지금 서비스 중인 v4 (70%). v3 75% 와 차이 없음(McNemar p=0.33), RAG만 붙인 qwen 대비 유의(p=0.03)
 
 // 질문 하나가 지나가는 길
 const flow = [
@@ -22,90 +23,43 @@ const flow = [
   { n: "④", who: "답변 · 내 노트북 Ollama", t: "seoulmate-1.7b가 근거로 답함", d: "Qwen3-1.7B를 직접 파인튜닝. 숫자 계산과 개인정보 차단은 코드가 맡습니다", key: true },
 ];
 
-// 라이브 시연 순서 (b = 할 일, s = 짚을 말) — 모델은 seoulmate-1.7b 하나로만
+// 라이브 시연 순서 (b = 할 일, s = 짚을 말)
 const demo = [
-  { b: "틀린 키 → 거절, 시연용 키 → 입장", s: "게이트웨이가 키를 검사합니다. 통과하면 ‘키 확인됨’과 쓸 수 있는 모델이 표시됨" },
-  { b: "‘오늘의 서울’ 기준 시각", s: "n8n이 30분마다 모은 실시간 자료라는 것만 짚기" },
-  { b: "“명동 오후 7시에 붐빌까?”", s: "기다리는 동안 “이 질문이 Azure 게이트웨이와 터널을 지나 제 노트북으로 갑니다” → 답변 아래 근거와 응답 시간 → 명동 카드의 7시 막대와 맞춰 보기" },
-  { b: "“명동 사람 전화번호 알려줘”", s: "모델을 부르지 않고 0.1초 만에 거절" },
+  { b: "API 키로 입장", s: "게이트웨이가 키를 검사합니다. 통과하면 ‘키 확인됨’과 쓸 수 있는 모델이 표시됨" },
+  { b: "일반 채팅 · qwen3:1.7b에게 “지금 강남역 붐벼?”", s: "자료 없이 모델만 답합니다. 모른다고 하거나 숫자를 지어냄 (답 아래 ‘자료 검색 없음’)" },
+  { b: "서울 메이트 · seoulmate-1.7b에게 “지금 강남역 붐벼?”", s: "수집 자료를 근거로 답합니다. 답 아래 기준 시각과 근거 → 왼쪽 강남역 카드와 같은 값" },
+  { b: "n8n 실행 기록에서 방금 질문이 지나간 길", s: "맨 위 실행을 열면 질문 분석 → Qdrant 검색(장소·시각) → 게이트웨이 LLM 호출 → 화면에 응답. 일반 채팅은 n8n을 거치지 않아 기록에 없음" },
 ];
 
-// 같은 질문, 세 단계 (shot 이 없으면 캡처 받을 자리로 표시)
-type Step = { n: string; who: string; t: string; v: string; vl: string; pick?: boolean; ph: string; shot?: { src: string; alt: string; w: number; h: number } };
-const steps: Step[] = [
-  { n: "①", who: "기본 모델 · qwen3:1.7b", t: "실시간 자료가 없어 모른다고 하거나 지어냄", v: "0/20", vl: "1차 평가 20문항", ph: "‘일반 채팅’에 같은 질문" },
-  { n: "②", who: "+ RAG · qwen3:1.7b + 수집 자료", t: "지금 혼잡도는 맞히지만 ‘몇 시’ 예측은 자주 틀림", v: "55%", vl: "정확도 · 예측 2/20 · 평균 8.9초", ph: "서울 메이트 + qwen3:1.7b" },
-  { n: "③", who: "+ 파인튜닝 · seoulmate-1.7b", t: "예측까지 근거대로 맞힘, 지어낸 숫자 0%", v: "75%", vl: "정확도 · 예측 17/20 · 평균 6.3초", pick: true, ph: "서울 메이트 + seoulmate-1.7b" },
+// 시연 화면 두 장 (같은 질문, 같은 시각)
+const pair = [
+  { src: "/shots/mt-demo-qwen.webp", alt: "일반 채팅 qwen3:1.7b의 답: 강남역은 여전히 붐벼요. 답 아래 자료 검색 없음(일반 채팅)", w: 394, h: 426, cap: "qwen3:1.7b · 자료 없음", pick: false },
+  { src: "/shots/mt-demo-seoulmate.webp", alt: "서울 메이트 seoulmate-1.7b의 답: 아니요, 지금 강남역은 한산한 편이에요. 11월 25일 23시 50분 기준 여유, 추정 인구 26,000~28,000명. 근거 강남역 23:50 기준", w: 399, h: 492, cap: "seoulmate-1.7b · 근거와 함께", pick: true },
 ];
 
-// 교육에서 배운 것 → 서울 메이트에 적용한 방법 → 확인한 결과
-const learned = [
-  {
-    t: "소버린 AI · 게이트웨이",
-    how: ["내 노트북 모델을 ", "Azure의 LiteLLM 게이트웨이로만", " 열고, 사람마다 키와 호출 제한을 따로 줬습니다."],
-    chips: ["Ollama", "LiteLLM · Caddy", "Tailscale"],
-    v: "9/10",
-    vl: "안전 시험 통과 (1개는 사람 판정)",
-  },
-  {
-    t: "n8n 자동화",
-    how: ["", "30분마다 수집 → 임베딩 → Qdrant 저장", "까지 사람 손 없이 돌게 했습니다."],
-    chips: ["n8n (Docker)", "서울 열린데이터광장 API"],
-    v: "810",
-    vl: "학습·평가에 쓴 수집 기록",
-  },
-  {
-    t: "RAG",
-    how: ["질문의 ", "장소와 시각으로 수집 자료를 찾아", " 근거로 붙였습니다."],
-    chips: ["Qdrant", "bge-m3 임베딩"],
-    v: "0 → 19/20",
-    vl: "1차 평가 정답",
-  },
-  {
-    t: "파인튜닝",
-    how: ["수집 자료로 만든 ", "문답 1,725개로 Qwen3-1.7B를 LoRA 학습", "해, 자료 속 예측 값을 읽고 해요체로 짧게 답하게 했습니다."],
-    chips: ["LoRA · Colab GPU", "GGUF → Ollama"],
-    v: "2 → 17/20",
-    vl: "예측 질문 정답",
-    hl: true,
-  },
-  {
-    t: "평가로 증명",
-    how: ["11/22 이후 자료는 ", "학습에 쓰지 않고 평가용으로만", " 떼어 두고, 같은 100문항으로 비교했습니다."],
-    chips: ["시간 기준 분리", "McNemar 검정"],
-    v: "p=0.005",
-    vl: "55% → 75% 차이가 우연이 아님",
-  },
-];
-
-// 아직 약한 것
-const limits = [
-  { t: "여러 곳을 한꺼번에 비교하는 질문에 약함", d: "“어디가 제일 한산해?” 같은 질문은 세 모델 모두 0~2/6" },
-  { t: "노트북 한 대 · 서울 5곳", d: "노트북이 꺼지면 답을 못 하고, 장소가 5곳뿐" },
-];
-
-const backup: Shot[] = [
-  { src: "/shots/mt-login.webp", alt: "서울 메이트 API 키로 입장 화면: 키 입력칸과 답변 경로(브라우저 → Azure 게이트웨이 → Tailscale → 발표자 PC Ollama)", caption: "① API 키로 입장", width: 1400, height: 837 },
-  { src: "/shots/mt-n8n-collect.webp", alt: "n8n 워크플로 서울 도시데이터 30분 수집: 30분마다 → 장소 목록 → 서울 도시데이터 호출 → 스냅샷 정리 → 저장", caption: "② n8n 30분 수집 워크플로", width: 1400, height: 666 },
-  { src: "/shots/mt-n8n-exec.webp", alt: "n8n 실행 기록: 11월 25일 30분마다 Succeeded", caption: "③ 30분마다 성공한 실행 기록 (11/25)", width: 1400, height: 698 },
-  { src: "/shots/mt-n8n-rag.webp", alt: "n8n RAG 적재 워크플로: 수집 파일 읽기 → 문서 만들기 → bge-m3 임베딩 → Qdrant 저장", caption: "④ RAG 적재 (bge-m3 → Qdrant)", width: 1400, height: 698 },
+// 최종 성능표 (같은 100문항, 공정 채점)
+const rows = [
+  { way: "프롬프트", setup: "qwen3:1.7b", acc: "0%", made: "61%", style: "34%", sec: "5.5초", warn: true },
+  { way: "RAG", setup: "qwen3:1.7b + 검색 자료(RAG)", acc: "55%", made: "1%", style: "50%", sec: "8.9초", warn: false },
+  { way: "파인튜닝", setup: "seoulmate-1.7b", acc: "0%", made: "70%", style: "95%", sec: "3.1초", warn: true },
+  { way: "하이브리드 (서비스)", setup: "seoulmate-1.7b + 검색 자료(RAG)", acc: "70%", made: "0%", style: "100%", sec: "6.6초", warn: false, pick: true },
 ];
 
 export default function Midterm() {
   return (
     <main id="main" className="wrap page">
-      {/* ── 문제 ── */}
-      <section className="split" aria-label="문제">
+      {/* ── 목표 ── */}
+      <section className="split" aria-label="목표">
         <div style={{ display: "grid", gap: 20 }}>
           <PageHead path="/midterm" status="배포됨" meta="중간평가 프로젝트" title="서울 메이트">
             서울 시민과 관광객에게 <span className="hl">지금 어디가 붐비는지, 몇 시에 붐빌지</span>를 근거와 함께 알려 주는 혼잡도 안내.
             외부 AI 없이 내 서버와 내 노트북 모델이 답합니다.
           </PageHead>
           <div className="panel">
-            <Cue>문제</Cue>
-            <p className="say">서울 혼잡도는 공공 데이터로 다 나와 있는데, 작은 AI 모델은 그걸 모릅니다.</p>
+            <Cue>목표</Cue>
+            <p className="say">외부 AI 없이, 노트북의 작은 모델(qwen3:1.7b)로 서울 혼잡도를 맞히기</p>
             <p className="body">
-              물어보면 모른다고 하거나 숫자를 지어냅니다. 그래서 <b>실시간 자료를 모아 근거로 붙이고(RAG), 그 자료를 읽는 법을 모델에
+              그대로 물어보면 모른다고 하거나 지어냅니다. 그래서 <b>실시간 자료를 모아 근거로 붙이고(RAG), 그 자료를 읽는 법을 모델에
               학습(파인튜닝)</b>시켰습니다.
             </p>
             <p className="note">데이터: 서울시 실시간 도시데이터(OA-21285) · 서울 열린데이터광장 · 5곳</p>
@@ -157,133 +111,110 @@ export default function Midterm() {
               서울 메이트 열기 ↗
             </a>
           </div>
-          <p className="note">시연은 seoulmate-1.7b 하나로만 합니다. 모델을 바꾸면 메모리에 다시 올리느라 멈출 수 있습니다.</p>
+          <p className="note">같은 질문을 두 모델에게: 아래 결과표의 첫 줄과 마지막 줄</p>
         </div>
         <aside className="panel" aria-label="시연 화면 미리 보기">
           <div className="mt-pair">
-            <figure className="shot">
-              <Image src="/shots/mt-answer.webp" alt="seoulmate-1.7b 답변: 지금 강남역은 많이 붐벼요, 아래에 근거 강남역 16시 20분 기준" width={382} height={231} sizes="(max-width: 920px) 50vw, 220px" />
-              <figcaption>답변 + 근거</figcaption>
-            </figure>
-            <figure className="shot">
-              <Image src="/shots/mt-pii.webp" alt="개인정보 질문 차단: 죄송해요, 개인정보는 알려 드릴 수 없어요. 모델 호출 안 함, 응답 0.1초" width={404} height={329} sizes="(max-width: 920px) 50vw, 220px" />
-              <figcaption>개인정보 차단 · 0.1초</figcaption>
-            </figure>
+            {pair.map((p) => (
+              <figure key={p.src} className={p.pick ? "shot is-pick" : "shot"}>
+                <Image src={p.src} alt={p.alt} width={p.w} height={p.h} sizes="(max-width: 920px) 50vw, 240px" />
+                <figcaption>{p.cap}</figcaption>
+              </figure>
+            ))}
           </div>
           <ul className="prep">
             <li>시연 전: Azure VM · 노트북 Ollama · Tailscale · n8n 켜기</li>
-            <li>모델은 seoulmate-1.7b로, 5분 전에 질문 한 번 (미리 올려 두기)</li>
-            <li>‘오후 7시’가 12시간 막대 안에 있는지 확인 (아니면 몇 시간 뒤로 바꿔 묻기)</li>
           </ul>
         </aside>
       </section>
 
-      <Backup title="시연이 안 될 때 · 캡처 4장" shots={backup} />
-
-      {/* ── 같은 질문, 세 단계 ── */}
-      <section aria-labelledby="mt-steps-h" style={{ display: "grid", gap: 16 }}>
-        <div className="sec-row">
-          <h2 id="mt-steps-h" className="sec-title">
-            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              같은 질문, 세 단계
-            </span>
-            자료를 붙이고, 읽는 법을 학습시킬수록 맞혔습니다
-          </h2>
-          <span className="note">질문: “명동 오후 7시에 붐빌까?” (같은 시각에 캡처)</span>
-        </div>
-        <ol className="steps3">
-          {steps.map((s) => (
-            <li key={s.n} className={s.pick ? "step3 is-pick" : "step3"}>
-              <span className="role-who">
-                <span className="mono">{s.n}</span> {s.who}
-                {s.pick ? " ✓ 채택" : ""}
+      {/* ── 시연이 안 될 때 (시연 순서대로 캡처 4장, 누르면 원본) ── */}
+      <details className="backup">
+        <summary>시연이 안 될 때 · 시연 순서대로 캡처 4장</summary>
+        <div className="mt-backup">
+          <div className="mt-backup-top">
+            <a className="shot" href="/shots/mt-login.webp" target="_blank" rel="noreferrer">
+              <Image src="/shots/mt-login.webp" alt="서울 메이트 API 키로 입장 화면: 키 입력칸과 답변 경로(브라우저 → Azure 게이트웨이 → Tailscale → 발표자 PC Ollama)" width={1400} height={837} sizes="(max-width: 720px) 100vw, 600px" />
+              <span className="cap">
+                <b>①</b> API 키로 입장
               </span>
-              {s.shot ? (
-                <figure className="shot">
-                  <Image src={s.shot.src} alt={s.shot.alt} width={s.shot.w} height={s.shot.h} sizes="(max-width: 860px) 100vw, 340px" />
-                </figure>
-              ) : (
-                <div className="ph">
-                  캡처 받을 자리
-                  <br />
-                  {s.ph}
-                </div>
-              )}
-              <b>{s.t}</b>
-              <span className="step3-v">
-                <span className="mono learned-num">{s.pick ? <span className="hl">{s.v}</span> : s.v}</span>
-                <span className="note">{s.vl}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
-        <p className="note">
-          ②·③은 학습에 쓰지 않은 100문항을 같은 RAG 자료로 채점 (55% → 75%, McNemar p=0.005). ①은 자료 없이 물은 1차 평가 20문항. 응답
-          시간은 연속 측정 평균.
-        </p>
-      </section>
-
-      {/* ── 배운 것을 이렇게 썼습니다 ── */}
-      <section aria-labelledby="mt-learned-h" style={{ display: "grid", gap: 16 }}>
-        <div className="sec-row">
-          <h2 id="mt-learned-h" className="sec-title">
-            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              배운 것을 이렇게 썼습니다
-            </span>
-            교육에서 배운 것을 한 서비스로 묶었습니다
-          </h2>
-        </div>
-        <div className="learned" role="table" aria-label="교육에서 배운 것을 서울 메이트에 적용한 방법">
-          <div className="learned-row is-head" role="row">
-            <span role="columnheader">교육에서 배운 것</span>
-            <span role="columnheader">서울 메이트에 적용한 방법</span>
-            <span role="columnheader">확인한 결과</span>
-          </div>
-          {learned.map((l) => (
-            <div key={l.t} className="learned-row" role="row">
-              <div className="learned-what" role="cell">
-                <b>{l.t}</b>
-              </div>
-              <div className="learned-how" role="cell">
-                <p>
-                  {l.how[0]}
-                  <b>{l.how[1]}</b>
-                  {l.how[2]}
-                </p>
-                <ul className="chips" aria-label="사용 기술">
-                  {l.chips.map((c) => (
-                    <li key={c}>{c}</li>
-                  ))}
-                </ul>
-                {l.t === "파인튜닝" ? <div className="ph ph-sm">Colab 학습 화면 받을 자리</div> : null}
-              </div>
-              <div className="learned-v" role="cell">
-                <span className="mono learned-num">{l.hl ? <span className="hl">{l.v}</span> : l.v}</span>
-                <span className="note">{l.vl}</span>
-              </div>
+            </a>
+            <div className="mt-pair">
+              {pair.map((p, i) => (
+                <a key={p.src} className={p.pick ? "shot is-pick" : "shot"} href={p.src} target="_blank" rel="noreferrer">
+                  <Image src={p.src} alt={p.alt} width={p.w} height={p.h} sizes="(max-width: 720px) 50vw, 240px" />
+                  <span className="cap">
+                    <b>{i === 0 ? "②" : "③"}</b> {p.cap}
+                  </span>
+                </a>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── 한계 → ERLink ── */}
-      <section aria-labelledby="mt-lim-h" style={{ display: "grid", gap: 16 }}>
-        <div className="sec-row">
-          <h2 id="mt-lim-h" className="sec-title">
-            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              한계
+          </div>
+          <a className="shot" href="/shots/mt-n8n-ask-exec.webp" target="_blank" rel="noreferrer">
+            <Image
+              src="/shots/mt-n8n-ask-exec.webp"
+              alt="n8n 실행 기록: 서울 메이트 API, 질문 받기 → 질문 분석 → Qdrant 검색(장소·시각) → 프롬프트 만들기 → 자료 있음? → 게이트웨이 LLM 호출 → 응답 만들기 → 화면에 응답, 모두 성공"
+              width={1400}
+              height={694}
+              sizes="(max-width: 1100px) 100vw, 1060px"
+            />
+            <span className="cap">
+              <b>④</b> n8n 실행 기록 — 방금 질문이 지나간 길 (질문 분석 → Qdrant 검색 → 게이트웨이 LLM 호출 → 화면에 응답)
             </span>
-            아직 약한 것
+          </a>
+        </div>
+      </details>
+
+      {/* ── 결과 · 최종 성능표 ── */}
+      <section aria-labelledby="mt-result-h" style={{ display: "grid", gap: 16 }}>
+        <div className="sec-row">
+          <h2 id="mt-result-h" className="sec-title">
+            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
+              결과
+            </span>
+            모델 혼자로는 0%, 자료를 붙이면 55%,
+            <br />
+            학습한 모델에 자료를 붙이면 <span className="hl">70%</span>
           </h2>
         </div>
-        <ul className="mt-limits">
-          {limits.map((l) => (
-            <li key={l.t}>
-              <b>{l.t}</b>
-              <span>{l.d}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="table-box">
+          <table className="cmp result-table">
+            <caption>최종 성능표 · 같은 100문항, 공정 채점</caption>
+            <thead>
+              <tr>
+                <th scope="col">방식</th>
+                <th scope="col">모델과 설정</th>
+                <th scope="col" className="r">
+                  사실 정확도
+                </th>
+                <th scope="col" className="r">
+                  지어낸 숫자
+                </th>
+                <th scope="col" className="r">
+                  해요체
+                </th>
+                <th scope="col" className="r">
+                  평균 응답
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.way} className={r.pick ? "is-pick" : undefined}>
+                  <th scope="row">{r.way}</th>
+                  <td>{r.setup}</td>
+                  <td className="num r strong">{r.pick ? <span className="hl">{r.acc}</span> : r.acc}</td>
+                  <td className={r.warn ? "num r warn" : "num r"}>{r.made}</td>
+                  <td className="num r">{r.style}</td>
+                  <td className="num r">{r.sec}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-takeaway">
+          RAG가 사실을 주고, 파인튜닝이 그 사실을 읽는 법과 말투를 다듬습니다. <span className="hl">둘을 합쳐야 사실에 가깝게 답합니다.</span>
+        </p>
         <p className="say next">“여기서 익힌 RAG·파인튜닝·평가 방식을, 사람 생명이 걸린 문제에 적용한 것이 다음 프로젝트 ERLink입니다.”</p>
       </section>
 
