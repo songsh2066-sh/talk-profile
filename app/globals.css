@@ -304,6 +304,17 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 .mini { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; box-shadow: var(--shadow); }
 .mini-visual { background: var(--paper); border-bottom: 1px solid var(--line); padding: 20px; }
 .mini-visual .placeholder { aspect-ratio: 16 / 10; border: 1px dashed var(--line-2); border-radius: 10px; display: grid; place-items: center; color: var(--muted); font-size: 14px; text-align: center; padding: 12px; }
+/* 추가 프로젝트 3개 (11/25): 캡처가 없는 사이트는 주소 틀로. 캡처는 같은 비율로 위쪽만 */
+.mini-visual .shot img { width: 100%; aspect-ratio: 910 / 568; object-fit: cover; object-position: top; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.siteframe { aspect-ratio: 910 / 568; display: grid; grid-template-rows: auto 1fr; border: 1px solid var(--line-2); border-radius: 12px; overflow: hidden; background: var(--surface); text-decoration: none; box-shadow: var(--shadow); }
+.siteframe:hover { border-color: var(--ink); }
+.siteframe-bar { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: var(--paper-2); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+.siteframe-bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--line-2); }
+.siteframe-bar .mono { margin-left: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.siteframe-body { display: grid; place-content: center; gap: 6px; text-align: center; padding: 16px; }
+.siteframe-body b { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.siteframe-body span { font-size: 13px; color: var(--muted); }
 .mini-body { padding: 22px; display: grid; gap: 12px; align-content: start; }
 .mini-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .mini-top h2 { font-size: 22px; font-weight: 800; }

@@ -129,20 +129,6 @@ export default function ERLink() {
               거절되면 다음 병원에 다시 걸고, 그동안 환자는 구급차 안에서 기다립니다. 빈 병상과 병원 역량 정보는 공공 데이터에 이미
               있지만, 그걸로 <b>어느 병원에 먼저 요청할지</b> 근거와 함께 정해 주는 도구가 없었습니다.
             </p>
-            <ul className="users" aria-label="사용자">
-              <li>
-                <b>신고자</b>
-                <span>말하거나 적기</span>
-              </li>
-              <li>
-                <b>119 상황요원</b>
-                <span>추천 확인 · 병원에 수용 요청</span>
-              </li>
-              <li>
-                <b>구급대원</b>
-                <span>최종 승인</span>
-              </li>
-            </ul>
           </div>
         </div>
         <figure className="phones">
