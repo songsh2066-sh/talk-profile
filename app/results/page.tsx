@@ -19,6 +19,8 @@ function Bar({ label, value, pct, after }: { label: string; value: string; pct: 
 }
 
 // 05 성과 · 마무리 (3분) — 내용 출처: 15분 발표 구성표 6장 (11/25: 1분 30초 · 1분 · 30초)
+//   11/26: 서울 메이트 수치를 서비스 중인 v4 기준(같은 100문항: 0% → 55% → 70%, RAG만 대비 McNemar p=0.03)으로,
+//          안전 시험은 결과 파일대로 9/10(1개 사람 판정), 남은 과제는 ERLink 페이지 다음 단계와 맞춤
 export default function Results() {
   return (
     <>
@@ -31,13 +33,14 @@ export default function Results() {
             <div className="panel">
               <div className="sec-row">
                 <b>서울 메이트 · 사실 정확도</b>
-                <span className="delta">+20%p</span>
+                <span className="delta">0% → 70%</span>
               </div>
-              <div className="bars" role="img" aria-label="기본 모델 55%, 파인튜닝 모델 75%">
-                <Bar label="기본 모델" value="55%" pct={55} />
-                <Bar label="파인튜닝" value="75%" pct={75} after />
+              <div className="bars" role="img" aria-label="모델 혼자 0%, 검색 자료(RAG)를 붙이면 55%, 파인튜닝 모델에 검색 자료를 붙이면 70%">
+                <Bar label="모델 혼자" value="0%" pct={1} />
+                <Bar label="+ 검색 자료" value="55%" pct={55} />
+                <Bar label="+ 파인튜닝" value="70%" pct={70} after />
               </div>
-              <p className="note">같은 RAG 자료 · 학습에 쓰지 않은 100문항 · McNemar p=0.005 · 안전 시험 10/10</p>
+              <p className="note">같은 100문항 · 지어낸 숫자 0% · RAG만 대비 p=0.03 · 안전 시험 9/10 (1개는 사람 판정)</p>
             </div>
             <div className="panel">
               <div className="sec-row">
@@ -61,7 +64,7 @@ export default function Results() {
               <b>학습 데이터의 버그를 찾았다</b>
               <p>
                 서울 메이트: 파인튜닝 후에도 예측 질문을 틀림 → 학습 문답을 전수 검사해 예측 정답 약 47%가 틀린 생성기 버그를 고치고,
-                계산은 코드가 맡게 설계. 정확도 47% → 75%.
+                계산은 코드가 맡게 설계. 정확도 47% → 70%.
               </p>
             </div>
             <div className="idea">
@@ -79,10 +82,10 @@ export default function Results() {
             남은 과제
           </Cue>
           <ul className="todo">
-            <li>여러 곳 비교 질문 → 코드 순위 계산</li>
-            <li>짧은 신고 위급 인식 69% → 신고 길이별 기준</li>
-            <li>노트북 → 클라우드 서버로 옮기기</li>
-            <li>현장 의견 받기</li>
+            <li>짧은 신고 위급 인식 69% → 과소평가율 더 낮추기</li>
+            <li>병원과 바로 연결 (지금은 응답을 대신 누름)</li>
+            <li>클라우드로 옮기고 현장에서 검증</li>
+            <li>서울 메이트 · 여러 곳 비교 질문 보강</li>
           </ul>
         </section>
 
@@ -92,7 +95,7 @@ export default function Results() {
       <section className="closing" aria-label="마무리">
         <div className="wrap closing-in">
           <p className="closing-q">
-            큰 모델이 없어도, <span className="mark">틀리는 곳을 알고 설계로 막으면</span> 믿을 수 있는 AI를 만들 수 있습니다.
+            외부 AI 없이 작은 모델로도, <span className="mark">틀리는 곳을 알고 설계로 막으면</span> 믿을 수 있는 AI를 만들 수 있습니다.
           </p>
           <div className="closing-foot">
             <span>송상헌 · AI 에이전트 개발자 · 감사합니다</span>
