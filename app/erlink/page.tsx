@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "메인 프로젝트 · ERLink AI" };
 
 // 03 메인 프로젝트 (7분) — 내용 출처: 15분 발표 구성표 4장 (11/25 개편)
 //   발표 대본이 따로 없어서, 블록마다 굵은 글 = 말할 핵심, 작은 글 = 덧붙일 설명으로 씁니다.
-//   발표 시간 배분(화면에는 표시 안 함): 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 기술과 결과 1분 50초 · 한계와 다음 단계 40초
+//   발표 시간 배분(화면에는 표시 안 함): 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 기술과 결과 1분 50초 (한계와 다음 단계는 11/26 성과 탭으로)
 
 // 누가 무엇을 하나 (사람과 AI의 역할)
 const flow = [
@@ -78,28 +78,6 @@ const learned = [
     chips: ["FastAPI · Next.js", "PostgreSQL · Redis", "GitHub Actions"],
     v: "669",
     vl: "자동 시험 · CI 통과",
-  },
-];
-
-// 아직 못 한 것 → 다음에 할 것 (11/25 사용자 결정: 한계 하나에 계획 하나를 짝지어, 수치 줄은 위 표에 있으니 뺌)
-const nexts = [
-  {
-    lt: "짧은 신고에 약함",
-    ld: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)",
-    pt: "과소평가율 더 낮추기",
-    pd: "놓친 사례를 질환별로 모아 규칙과 학습 데이터를 보강하고, 짧은 신고는 더 일찍 위급으로",
-  },
-  {
-    lt: "병원 연결은 아직 가정",
-    ld: "오늘 시연의 병원 응답은 발표자가 대신 누름",
-    pt: "병원과 바로 연결",
-    pd: "병원 화면에서 수용 요청을 받아 승인·거절, 전화 없이 연결",
-  },
-  {
-    lt: "노트북 한 대 · 서울에서만 · 현장 검증 전",
-    ld: "꺼지면 멈추고, 자료가 서울뿐이고, 실제 구급대원이 써 보지 않음",
-    pt: "클라우드로 옮기고 현장에서 검증",
-    pd: "서버 이전과 모니터링, 구급대원·상황요원 6~10명 의견 받기",
   },
 ];
 
@@ -268,40 +246,8 @@ export default function ERLink() {
         </div>
       </section>
 
-      {/* ── 한계와 다음 단계 (11/25) ── */}
-      <section aria-labelledby="lim-h" style={{ display: "grid", gap: 16 }}>
-        <div className="sec-row">
-          <h2 id="lim-h" className="sec-title">
-            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              한계와 다음 단계
-            </span>
-            아직 못 한 것과, 다음에 할 것
-          </h2>
-        </div>
-        <div className="nexts" role="table" aria-label="아직 못 한 것과 다음에 할 것">
-          <div className="nexts-row is-head" role="row">
-            <span role="columnheader">아직 못 한 것</span>
-            <span aria-hidden="true" />
-            <span role="columnheader">다음에 할 것</span>
-          </div>
-          {nexts.map((n) => (
-            <div key={n.lt} className="nexts-row" role="row">
-              <div className="nexts-lim" role="cell">
-                <b>{n.lt}</b>
-                <span>{n.ld}</span>
-              </div>
-              <span className="nexts-arrow" aria-hidden="true">
-                →
-              </span>
-              <div className="nexts-plan" role="cell">
-                <b>{n.pt}</b>
-                <span>{n.pd}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-        <p className="say next">“ERLink로 큰 시스템을 끝까지 만들어 봤다면, 짧게 만든 프로젝트도 하나씩 보여 드리겠습니다.”</p>
-      </section>
+      {/* 11/26: '한계와 다음 단계'는 성과 탭으로 옮김 — 추가 프로젝트로 넘어가는 한 줄만 남김 */}
+      <p className="say next">“ERLink로 큰 시스템을 끝까지 만들어 봤다면, 짧게 만든 프로젝트도 하나씩 보여 드리겠습니다.”</p>
 
       <Pager path="/erlink" />
     </main>
