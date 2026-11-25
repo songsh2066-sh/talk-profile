@@ -33,11 +33,10 @@ const agents = ["중증도", "빈 병상", "도착 시간", "병원 역량", "�
 const HUMAN = "사람 승인";
 
 // 11/25 사용자 결정: '내가 만든 것' → '교육에서 배운 것 → ERLink에 적용한 방법 → 확인한 결과'
-//   (from = 중간평가 서울 메이트에서 먼저 써 본 것 — 중간평가 3분과 이어지게)
+//   (11/25: ERLink 에서는 중간평가에서 쓴 것을 설명하지 않음 — 사용자 결정)
 const learned = [
   {
     t: "파인튜닝",
-    from: "중간평가: Qwen3 LoRA",
     how: ["119 신고 8.6만 건으로 ", "KoELECTRA를 중증도 분류에 파인튜닝", ". 위급 환자를 낮게 보는 실수에 더 큰 벌점을 줬습니다."],
     chips: ["KoELECTRA-small", "비대칭 손실", "AI Hub 119 신고"],
     v: "11.9→2.5%",
@@ -46,7 +45,6 @@ const learned = [
   },
   {
     t: "RAG",
-    from: "중간평가: Qdrant · bge-m3",
     how: ["법령 6개와 응급 지침을 조문 단위로 나눠 ", "단어 검색 + 뜻 검색을 함께", " 쓰고 순위를 합쳤습니다. 추천마다 근거 조문이 붙습니다."],
     chips: ["BM25 + e5 임베딩", "RRF", "pgvector"],
     v: "100%",
@@ -54,7 +52,6 @@ const learned = [
   },
   {
     t: "하이브리드 설계",
-    from: "중간평가: 모델 + RAG + 코드 계산",
     how: ["규칙이 기본이고 ", "모델은 등급을 올리기만", " 합니다. 도착 시간과 점수 같은 계산은 코드가 맡습니다."],
     chips: ["규칙 + 모델", "OSRM 도로망", "가중 점수"],
     v: "0건",
@@ -62,7 +59,6 @@ const learned = [
   },
   {
     t: "소버린 AI · 로컬 모델",
-    from: "중간평가: Ollama · 내 PC 모델",
     how: ["모델을 줄여 ", "노트북 CPU에서 판단", "하고, 음성 인식과 지도도 노트북 안에서 돌립니다. 환자 정보가 외부 AI 서버로 나가지 않습니다."],
     chips: ["ONNX int8", "faster-whisper", "자체 서울 지도"],
     v: "14.7MB · 3ms",
@@ -70,7 +66,6 @@ const learned = [
   },
   {
     t: "평가로 증명",
-    from: "중간평가: 같은 100문항으로 비교",
     how: ["학습에 쓰지 않은 평가셋을 먼저 떼어 두고, 바꿀 때마다 ", "같은 기준으로 다시 쟀습니다", "."],
     chips: ["서울 평가용 1.87만 건", "원칙 검사 714건"],
     v: "53→90%",
@@ -78,7 +73,6 @@ const learned = [
   },
   {
     t: "배포 · 운영",
-    from: "중간평가: n8n · LiteLLM · Azure",
     how: ["서비스를 ", "Docker Compose로 한 번에", " 띄우고, 올릴 때마다 시험이 돌게 했습니다. 공개 주소는 Cloudflare Tunnel로 붙였습니다."],
     chips: ["FastAPI · Next.js", "PostgreSQL · Redis", "GitHub Actions"],
     v: "669",
@@ -227,9 +221,6 @@ export default function ERLink() {
           </h2>
           <span className="note">개인 프로젝트 · 기획부터 배포까지</span>
         </div>
-        <p className="body" style={{ marginTop: -8 }}>
-          중간평가(서울 메이트)에서 먼저 써 본 방식을, 더 크고 위험한 문제에 그대로 확장했습니다.
-        </p>
         <div className="panel agentai">
           <div className="sec-row">
             <div className="agentai-t">
@@ -245,17 +236,9 @@ export default function ERLink() {
               </li>
             ))}
           </ol>
-          <div className="agentai-pts">
-            <p>
-              <b>한 에이전트 = 한 가지 일.</b> 단계별로 따로 시험할 수 있습니다.
-            </p>
-            <p>
-              <b>단계마다 근거를 남김.</b> 추천이 왜 나왔는지 거꾸로 따라갑니다.
-            </p>
-            <p>
-              <b>중단점에서 멈춤.</b> 병원 응답과 구급대원 승인 없이는 확정되지 않습니다.
-            </p>
-          </div>
+          <p className="agentai-one">
+            에이전트마다 한 가지 일만 맡아 단계마다 근거를 남기고, <b>‘사람 승인’에서 멈춰 병원 응답과 구급대원 승인 없이는 확정되지 않습니다.</b>
+          </p>
         </div>
         <div className="learned" role="table" aria-label="교육에서 배운 것을 ERLink에 적용한 방법">
           <div className="learned-row is-head" role="row">
@@ -267,7 +250,6 @@ export default function ERLink() {
             <div key={l.t} className="learned-row" role="row">
               <div className="learned-what" role="cell">
                 <b>{l.t}</b>
-                <span>{l.from}</span>
               </div>
               <div className="learned-how" role="cell">
                 <p>
@@ -288,7 +270,7 @@ export default function ERLink() {
             </div>
           ))}
         </div>
-        <p className="say next">“중간평가에서 익힌 RAG·파인튜닝·하이브리드를, 사람 생명이 걸린 문제에 맞게 더 엄격하게 적용했습니다.”</p>
+        <p className="say next">“교육에서 배운 RAG·파인튜닝·하이브리드를, 사람 생명이 걸린 문제에 맞게 더 엄격하게 적용했습니다.”</p>
       </section>
 
       {/* ── 40초 · 확인한 결과 · 한계 · 앞으로 계획 ── */}
