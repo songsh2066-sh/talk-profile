@@ -354,3 +354,20 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 
 @media print { .topbar, .pager, .keyhint, .backup { display: none; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* ── 중간평가 3분 (11/25 개편, ERLink 와 같은 틀) ── */
+.mt-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: start; }
+.steps3 { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .steps3 { grid-template-columns: 1fr; } }
+.step3 { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; align-content: start; }
+.step3 b { font-size: 15.5px; line-height: 1.45; }
+.step3.is-pick { border-color: var(--ok); background: var(--ok-soft); }
+.step3.is-pick .role-who { color: var(--ok); }
+.step3-v { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ph { aspect-ratio: 4 / 3; border: 1.5px dashed var(--line-2); border-radius: 10px; display: grid; place-items: center; text-align: center; font-size: 13px; color: var(--muted); padding: 10px; background: var(--surface); }
+.ph-sm { aspect-ratio: auto; padding: 14px; max-width: 320px; }
+.mt-limits { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .mt-limits { grid-template-columns: 1fr; } }
+.mt-limits li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 4px; }
+.mt-limits b { font-size: 16px; color: var(--wip); }
+.mt-limits span { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
