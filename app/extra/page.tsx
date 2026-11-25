@@ -7,7 +7,7 @@ import { links } from "@/data/talk";
 export const metadata: Metadata = { title: "추가 프로젝트" };
 
 // 04 추가 프로젝트 (합계 1분, 11/25 개편) — 교육 기간 동안 만든 것 3개 (사용자가 준 순서: 기억 탐정 → 서울 메이트 → 웹 이력서)
-//   서울 메이트(나들이 코스, seoulmate-six.vercel.app)는 중간평가의 서울 메이트(혼잡도 안내)와 다른 프로젝트
+//   서울 먹킷리스트(나들이·맛집 코스, seoulmate-six.vercel.app — 11/26 이름 변경)는 중간평가의 서울 메이트(혼잡도 안내)와 다른 프로젝트
 //   내용 출처: 각 사이트와 웹 이력서의 프로젝트 기록 (11/25 확인)
 type Project = {
   name: string;
@@ -39,7 +39,7 @@ const projects: Project[] = [
     shot: { src: "/projects/memory-detective.webp", alt: "기억 탐정 사건 접수서 화면: 기억나는 장면과 힌트 카드 입력", w: 910, h: 568 },
   },
   {
-    name: "서울 메이트",
+    name: "서울 먹킷리스트",
     when: "2026.10 · 배포됨",
     one: "날씨·혼잡도·운영시간을 도구로 직접 확인해 서울 나들이와 맛집 코스를 짜 주는 AI 에이전트.",
     note: "중간평가의 서울 메이트(혼잡도 안내)와는 다른 프로젝트",
@@ -52,7 +52,7 @@ const projects: Project[] = [
     href: links.seoulmateTrip,
     cta: "사이트 보기 ↗",
     host: "seoulmate-six.vercel.app",
-    shot: { src: "/projects/seoulmate-trip.webp", alt: "서울 메이트 첫 화면: 서울 먹킷리스트, 오늘은 어디로 갈까? 지금 가기 좋은 먹자골목 6곳과 실시간 장소 121곳", w: 1000, h: 822 },
+    shot: { src: "/projects/seoulmate-trip.webp", alt: "서울 먹킷리스트 첫 화면: 오늘은 어디로 갈까? 지금 가기 좋은 먹자골목 6곳과 실시간 장소 121곳", w: 1000, h: 822 },
   },
   {
     name: "웹 이력서 플랫폼",

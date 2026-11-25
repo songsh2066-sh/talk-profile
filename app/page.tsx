@@ -3,6 +3,23 @@ import Pager from "@/components/Pager";
 import { links, steps } from "@/data/talk";
 
 // 01 홈 · 자기소개 (1분) — 오늘 발표 목록은 data/talk.ts 의 순서·시간
+//   11/26 개편 (도안: 발표용 프로필 사이트 시안 MainV2): 대표 수치 4칸·'이렇게 만듭니다' 대신
+//   소개 문단 + 전공·과정 한 줄 + 교육 기간 동안 만든 프로젝트 + 사용한 기술 (보여 주기만, 말은 짧게)
+
+// 교육 기간 동안 만든 프로젝트 (웹 이력서는 교육 기간 전이라 뺌 — 11/26 사용자 결정)
+const built = [
+  { when: "2026.10", name: "기억 탐정 AI · 서울 먹킷리스트", how: "외부 AI(API)", main: false },
+  { when: "2026.11 · 중간평가", name: "서울 메이트", how: "내 노트북 작은 모델 · RAG · 파인튜닝", main: false },
+  { when: "2026.11 · 메인", name: "ERLink AI", how: "로컬 모델 · 에이전트 · 119 이송 병원 추천", main: true },
+];
+
+// 사용한 기술 (세 프로젝트에서 실제로 쓴 것)
+const skills = [
+  { t: "모델 · 학습", items: ["PyTorch", "LoRA 파인튜닝", "Qwen3", "KoELECTRA", "ONNX", "Ollama"] },
+  { t: "에이전트 · 검색", items: ["LangGraph", "RAG", "Qdrant", "pgvector", "n8n", "LiteLLM"] },
+  { t: "서비스 · 배포", items: ["FastAPI", "Next.js", "PostgreSQL", "Docker Compose", "Azure", "Cloudflare Tunnel", "GitHub Actions"] },
+];
+
 export default function Home() {
   return (
     <main id="main">
@@ -19,8 +36,8 @@ export default function Home() {
               믿을 수 있는 AI 만들기
             </p>
             <p className="hero-intro">
-              외부 AI 없이 작은 모델로 실제 서비스를 만들고, 개선은 같은 평가셋의 숫자로 확인합니다. 오늘은 서울 메이트와, 메인
-              프로젝트 ERLink를 라이브로 보여 드립니다.
+              외부 AI에 맡기지 않고 제 서버와 노트북에서 돌아가는 작은 모델로 실제 서비스를 만들고,{" "}
+              <b>필요한 자료를 찾아 근거로 붙여 주고 그 자료를 읽는 법을 직접 가르치며</b> 모델을 개선해 나갔습니다.
             </p>
             <div className="hero-cta">
               <Link className="btn btn-ink" href="/midterm">
@@ -33,6 +50,7 @@ export default function Home() {
                 문서형 이력서 ↗
               </a>
             </div>
+            <p className="hero-meta">소프트웨어·빅데이터 전공 · 서울시립대학교 AI Agent 과정 참여 중</p>
           </div>
 
           <aside className="agenda" aria-labelledby="agenda-h">
@@ -58,74 +76,40 @@ export default function Home() {
       </section>
 
       <div className="wrap page" style={{ paddingTop: 48 }}>
-        <dl className="metrics" aria-label="대표 수치">
-          <div className="metric">
-            <dt className="metric-v">
-              <span className="hl">55→75%</span>
-            </dt>
-            <dd>
-              <span className="metric-l">서울 메이트 정확도</span>
-              <span className="metric-s">같은 100문항 · 기본 모델 → 파인튜닝</span>
-            </dd>
-          </div>
-          <div className="metric">
-            <dt className="metric-v">
-              <span className="hl">11.9→2.5%</span>
-            </dt>
-            <dd>
-              <span className="metric-l">ERLink 위급 환자 과소평가</span>
-              <span className="metric-s">서울 119 신고 평가용 약 1.87만 건</span>
-            </dd>
-          </div>
-          <div className="metric">
-            <dt className="metric-v">
-              <span className="hl">669</span>
-            </dt>
-            <dd>
-              <span className="metric-l">ERLink 자동 시험</span>
-              <span className="metric-s">Python 565 · 화면 104 · 통합 39 · CI 통과</span>
-            </dd>
-          </div>
-          <div className="metric">
-            <dt className="metric-v">
-              <span className="hl">8.6만</span>
-            </dt>
-            <dd>
-              <span className="metric-l">119 신고로 학습</span>
-              <span className="metric-s">ERLink 중증도 모델 · KoELECTRA 파인튜닝</span>
-            </dd>
-          </div>
-        </dl>
-
-        <section aria-labelledby="how-h" style={{ display: "grid", gap: 20 }}>
-          <div style={{ display: "grid", gap: 6 }}>
-            <h2 id="how-h" className="sec-title">
-              이렇게 만듭니다
+        <section aria-labelledby="built-h" style={{ display: "grid", gap: 16 }}>
+          <div className="sec-row">
+            <h2 id="built-h" className="sec-title">
+              교육 기간 동안 만든 프로젝트
             </h2>
-            <p className="note">두 프로젝트에 같은 원칙을 썼습니다.</p>
+            <span className="note">외부 AI → 내 서버·내 모델</span>
           </div>
-          <ol className="principles">
-            <li className="principle">
-              <span className="mono principle-n">01</span>
-              <b className="principle-t">실데이터에 연결한다</b>
-              <p className="principle-b">서울 실시간 도시데이터, 응급실 병상 공공 API, 119 신고 녹취.</p>
-            </li>
-            <li className="principle">
-              <span className="mono principle-n">02</span>
-              <b className="principle-t">평가로 증명한다</b>
-              <p className="principle-b">학습에 쓰지 않은 평가셋을 먼저 만들고, 바꾼 뒤에 같은 기준으로 다시 잽니다.</p>
-            </li>
-            <li className="principle">
-              <span className="mono principle-n">03</span>
-              <b className="principle-t">약한 곳은 설계로 막는다</b>
-              <p className="principle-b">작은 모델이 약한 계산은 코드가, 위험한 결정은 사람이 맡습니다.</p>
-            </li>
-            <li className="principle">
-              <span className="mono principle-n">04</span>
-              <b className="principle-t">끝까지 배포한다</b>
-              <p className="principle-b">Vercel · Azure · Docker Compose · Cloudflare Tunnel(erlink.songsh.cloud) · GitHub Actions CI.</p>
-            </li>
+          <ol className="tl">
+            {built.map((b) => (
+              <li key={b.when} className={b.main ? "tl-item is-main" : "tl-item"}>
+                <span className="mono tl-when">{b.when}</span>
+                <b>{b.name}</b>
+                <span className="tl-how">{b.how}</span>
+              </li>
+            ))}
           </ol>
+        </section>
+
+        <section aria-labelledby="skill-h" style={{ display: "grid", gap: 16 }}>
+          <h2 id="skill-h" className="sec-title">
+            사용한 기술
+          </h2>
+          <div className="skills">
+            {skills.map((g) => (
+              <div key={g.t} className="skill-group">
+                <b>{g.t}</b>
+                <ul className="chips" aria-label={g.t}>
+                  {g.items.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </section>
 
         <Pager path="/" />
