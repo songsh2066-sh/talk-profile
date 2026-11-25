@@ -9,13 +9,13 @@ export const metadata: Metadata = { title: "메인 프로젝트 · ERLink AI" };
 
 // 03 메인 프로젝트 (7분) — 내용 출처: 15분 발표 구성표 4장 (11/25 개편)
 //   발표 대본이 따로 없어서, 블록마다 굵은 글 = 말할 핵심, 작은 글 = 덧붙일 설명으로 씁니다.
-//   시간: 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 배운 것을 이렇게 썼습니다 1분 50초 · 결과·한계·계획 40초
+//   발표 시간 배분(화면에는 표시 안 함): 문제 40초 · 흐름 50초 · 라이브 시연 3분 · 배운 것을 이렇게 썼습니다 1분 50초 · 한계와 다음 단계 40초
 
 // 누가 무엇을 하나 (사람과 AI의 역할)
 const flow = [
   { n: "①", who: "신고자", t: "말하거나 적어서 신고", d: "질문은 둘뿐 — 부르면 대답하나요? 숨을 쉬나요? 숨을 안 쉬면 바로 가슴 압박 안내" },
   { n: "②", who: "AI", t: "병원 3곳을 근거와 함께 추천", d: "중증도 → 빈 병상·도착 시간·병원 역량·포화도 → 법 조문 근거 → 순위 → 검토" },
-  { n: "③", who: "병원", t: "수용 요청에 수락·거절", d: "전화를 돌리는 대신 추천된 병원에 요청. 수락하면 승인 버튼이 켜지고, 거절하면 그 병원을 빼고 바로 다시 추천" },
+  { n: "③", who: "병원", t: "수용 요청에 승인·거절", d: "전화를 돌리는 대신 추천된 병원에 요청. 병원이 승인하면 이송 승인 버튼이 켜지고, 거절하면 그 병원을 빼고 바로 다시 추천" },
   { n: "④", who: "구급대원", t: "승인하고 기록을 남김", d: "신고자 화면에 '이송할 병원이 정해졌어요'. 결정은 고칠 수 없는 감사 기록으로" },
 ];
 
@@ -80,17 +80,26 @@ const learned = [
   },
 ];
 
-// 한계 (정직하게) → 앞으로 계획 (11/25 사용자: 피드백 목록 대신 한계와 계획)
-const limits = [
-  { t: "짧은 신고에 약함", d: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)" },
-  { t: "서울 안에서만 추천", d: "병원·도로·지도 자료가 서울만 있어서, 서울을 5km 넘게 벗어난 신고는 추천하지 않음" },
-  { t: "아직 현장 검증 전", d: "노트북 한 대에서 동작(꺼지면 멈춤), 실제 구급대원·상황요원이 써 보지 않음" },
-];
-const plans = [
-  { t: "과소평가율 더 낮추기 (지금 2.5%)", d: "위급 환자를 놓친 사례를 질환별로 모아 규칙과 학습 데이터를 보강하고, 짧은 신고는 더 일찍 위급으로 보게 기준을 나눔. 더 보수적인 기준(위급 인식 95%·99%)에서 경보가 얼마나 느는지 함께 잼" },
-  { t: "병원과 바로 연결", d: "수용 요청을 병원 화면에서 받아 수락·거절 → 전화 없이 연결 (오늘 시연은 연결됐다고 가정)" },
-  { t: "클라우드 서버로", d: "노트북 → 서버 이전, 모니터링(Grafana)과 장애 대응 연습" },
-  { t: "현장 의견 받기", d: "구급대원·상황요원 6~10명이 직접 써 보고, 고칠 점을 다시 시험으로" },
+// 아직 못 한 것 → 다음에 할 것 (11/25 사용자 결정: 한계 하나에 계획 하나를 짝지어, 수치 줄은 위 표에 있으니 뺌)
+const nexts = [
+  {
+    lt: "짧은 신고에 약함",
+    ld: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)",
+    pt: "과소평가율 더 낮추기",
+    pd: "놓친 사례를 질환별로 모아 규칙과 학습 데이터를 보강하고, 짧은 신고는 더 일찍 위급으로",
+  },
+  {
+    lt: "병원 연결은 아직 가정",
+    ld: "오늘 시연의 병원 응답은 발표자가 대신 누름",
+    pt: "병원과 바로 연결",
+    pd: "병원 화면에서 수용 요청을 받아 승인·거절, 전화 없이 연결",
+  },
+  {
+    lt: "노트북 한 대 · 서울에서만 · 현장 검증 전",
+    ld: "꺼지면 멈추고, 자료가 서울뿐이고, 실제 구급대원이 써 보지 않음",
+    pt: "클라우드로 옮기고 현장에서 검증",
+    pd: "서버 이전과 모니터링, 구급대원·상황요원 6~10명 의견 받기",
+  },
 ];
 
 const W = 1440;
@@ -106,7 +115,7 @@ const backup: Shot[] = [
 export default function ERLink() {
   return (
     <main id="main" className="wrap page">
-      {/* ── 40초 · 문제 ── */}
+      {/* ── 문제 ── */}
       <section className="split" aria-label="문제">
         <div style={{ display: "grid", gap: 20 }}>
           <PageHead path="/erlink" status="동작 중 · erlink.songsh.cloud" meta="메인 프로젝트 · 개인" title="ERLink AI">
@@ -114,7 +123,7 @@ export default function ERLink() {
             병상·법 조문 근거와 함께 추천하고, 확정은 사람이 합니다.
           </PageHead>
           <div className="panel">
-            <Cue time="40초">문제</Cue>
+            <Cue>문제</Cue>
             <p className="say">어느 응급실이 받을 수 있는지 모른 채, 병원에 차례로 전화를 돌립니다.</p>
             <p className="body">
               거절되면 다음 병원에 다시 걸고, 그동안 환자는 구급차 안에서 기다립니다. 빈 병상과 병원 역량 정보는 공공 데이터에 이미
@@ -147,12 +156,12 @@ export default function ERLink() {
         </figure>
       </section>
 
-      {/* ── 50초 · 전체 흐름 ── */}
+      {/* ── 전체 흐름 ── */}
       <section aria-labelledby="flow-h" style={{ display: "grid", gap: 16 }}>
         <div className="sec-row">
           <h2 id="flow-h" className="sec-title">
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              <span className="mono">50초</span> · 전체 흐름
+              전체 흐름
             </span>
             AI는 근거와 함께 추천하고, 결정은 사람이 합니다
           </h2>
@@ -170,10 +179,10 @@ export default function ERLink() {
         </ol>
       </section>
 
-      {/* ── 3분 · 라이브 시연 ── */}
+      {/* ── 라이브 시연 ── */}
       <section className="split-r" aria-label="라이브 시연">
         <div className="panel">
-          <Cue time="3분">라이브 시연 · erlink.songsh.cloud</Cue>
+          <Cue>라이브 시연 · erlink.songsh.cloud</Cue>
           <ol className="demo">
             {demo.map((d) => (
               <li key={d.b}>
@@ -210,12 +219,12 @@ export default function ERLink() {
 
       <Backup title="시연이 안 될 때 · 캡처 6장" shots={backup} />
 
-      {/* ── 1분 50초 · 배운 것을 이렇게 썼습니다 (11/25) ── */}
+      {/* ── 배운 것을 이렇게 썼습니다 (11/25) ── */}
       <section aria-labelledby="built-h" style={{ display: "grid", gap: 20 }}>
         <div className="sec-row">
           <h2 id="built-h" className="sec-title">
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              <span className="mono">1분 50초</span> · 배운 것을 이렇게 썼습니다
+              배운 것을 이렇게 썼습니다
             </span>
             교육에서 배운 기술로 ERLink를 만들었습니다
           </h2>
@@ -273,59 +282,37 @@ export default function ERLink() {
         <p className="say next">“교육에서 배운 RAG·파인튜닝·하이브리드를, 사람 생명이 걸린 문제에 맞게 더 엄격하게 적용했습니다.”</p>
       </section>
 
-      {/* ── 40초 · 확인한 결과 · 한계 · 앞으로 계획 ── */}
+      {/* ── 한계와 다음 단계 (11/25) ── */}
       <section aria-labelledby="lim-h" style={{ display: "grid", gap: 16 }}>
         <div className="sec-row">
           <h2 id="lim-h" className="sec-title">
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              <span className="mono">40초</span> · 확인한 결과 · 한계 · 앞으로 계획
+              한계와 다음 단계
             </span>
-            확인한 것과, 아직 못 한 것
+            아직 못 한 것과, 다음에 할 것
           </h2>
         </div>
-        <div className="proof">
-          <div>
-            <span className="proof-v">
-              <span className="hl">11.9→2.5%</span>
-            </span>
-            <span className="note">위급 환자 과소평가 (규칙만 → 규칙 + 모델, 서울 119 평가용 약 1.87만 건)</span>
+        <div className="nexts" role="table" aria-label="아직 못 한 것과 다음에 할 것">
+          <div className="nexts-row is-head" role="row">
+            <span role="columnheader">아직 못 한 것</span>
+            <span aria-hidden="true" />
+            <span role="columnheader">다음에 할 것</span>
           </div>
-          <div>
-            <span className="proof-v">100%</span>
-            <span className="note">추천 근거 조문 인용률</span>
-          </div>
-          <div>
-            <span className="proof-v">669</span>
-            <span className="note">자동 시험 (Python 565 · 화면 104) + 통합 39 · CI 통과</span>
-          </div>
-          <div>
-            <span className="proof-v">12차</span>
-            <span className="note">화면·흐름 검토 · 지적마다 재발 방지 시험</span>
-          </div>
-        </div>
-        <div className="lp">
-          <div className="lp-col is-wip">
-            <span className="cue is-wip">한계</span>
-            <ul>
-              {limits.map((l) => (
-                <li key={l.t}>
-                  <b>{l.t}</b>
-                  <span>{l.d}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="lp-col">
-            <span className="cue">앞으로 계획</span>
-            <ul>
-              {plans.map((p) => (
-                <li key={p.t}>
-                  <b>{p.t}</b>
-                  <span>{p.d}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {nexts.map((n) => (
+            <div key={n.lt} className="nexts-row" role="row">
+              <div className="nexts-lim" role="cell">
+                <b>{n.lt}</b>
+                <span>{n.ld}</span>
+              </div>
+              <span className="nexts-arrow" aria-hidden="true">
+                →
+              </span>
+              <div className="nexts-plan" role="cell">
+                <b>{n.pt}</b>
+                <span>{n.pd}</span>
+              </div>
+            </div>
+          ))}
         </div>
         <p className="say next">“ERLink로 큰 시스템을 끝까지 만들어 봤다면, 짧게 만든 프로젝트도 하나씩 보여 드리겠습니다.”</p>
       </section>

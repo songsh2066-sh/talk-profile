@@ -247,14 +247,20 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 .built-top b { font-size: 16px; }
 .built-v { font-size: 13px; font-weight: 700; color: var(--ok); }
 .built-item p { font-size: 14px; line-height: 1.65; color: var(--ink-2); }
-.lp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-@media (max-width: 760px) { .lp { grid-template-columns: 1fr; } }
-.lp-col { border-radius: 14px; padding: 18px 20px; background: var(--ok-soft); display: grid; gap: 10px; align-content: start; }
-.lp-col.is-wip { background: var(--wip-soft); }
-.lp-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.lp-col li { display: grid; gap: 2px; }
-.lp-col b { font-size: 15.5px; }
-.lp-col li span { font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+/* 아직 못 한 것 → 다음에 할 것 (11/25): 한계 하나에 계획 하나 */
+.nexts { display: grid; }
+.nexts-row { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); gap: 16px; padding: 16px 4px; border-bottom: 1px solid var(--line); align-items: start; }
+.nexts-row.is-head { padding: 0 4px 10px; font-size: 12px; font-weight: 700; color: var(--muted); border-bottom: 2px solid var(--ink); }
+.nexts-lim, .nexts-plan { display: grid; gap: 4px; }
+.nexts-lim b { font-size: 16px; color: var(--wip); }
+.nexts-plan b { font-size: 16px; color: var(--ok); }
+.nexts-lim span, .nexts-plan span { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+.nexts-arrow { color: var(--muted); font-weight: 700; text-align: center; padding-top: 1px; }
+@media (max-width: 760px) {
+  .nexts-row { grid-template-columns: 1fr; gap: 8px; }
+  .nexts-row.is-head { display: none; }
+  .nexts-arrow { display: none; }
+}
 
 /* ── ERLink '배운 것을 이렇게 썼습니다' (11/25) — 배운 것 → 적용 → 결과 ── */
 .agentai { padding: 22px 24px; gap: 14px; }

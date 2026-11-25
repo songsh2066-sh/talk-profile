@@ -38,11 +38,7 @@ export default function PageHead({
   );
 }
 
-// 블록 위의 작은 시간 표시 (예: "30초 · 문제와 데이터")
-export function Cue({ time, children, tone = "ok" }: { time: string; children: React.ReactNode; tone?: "ok" | "wip" }) {
-  return (
-    <p className={`cue is-${tone}`}>
-      <span className="mono">{time}</span> · {children}
-    </p>
-  );
+// 블록 위의 작은 구간 이름 (예: "문제와 데이터"). 11/25: 앞의 시간 표시는 화면에서 뺌 — time 은 대본·구성표용으로만 남김
+export function Cue({ children, tone = "ok" }: { time?: string; children: React.ReactNode; tone?: "ok" | "wip" }) {
+  return <p className={`cue is-${tone}`}>{children}</p>;
 }
