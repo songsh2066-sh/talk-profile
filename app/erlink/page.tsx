@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import PageHead, { Cue } from "@/components/PageHead";
 import Pager from "@/components/Pager";
-import Nexts from "@/components/Nexts";
 import Backup, { type Shot } from "@/components/Backup";
 import { links } from "@/data/talk";
 
@@ -96,10 +95,11 @@ const learned = [
 ];
 
 // 한계와 다음 단계 (11/26 2차: 성과 탭에서 되돌림 · 신고 접수도 가정임을 밝힘)
-const nexts = [
-  { lt: "짧은 신고에 약함", ld: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)", pt: "과소평가율 더 낮추기", pd: "놓친 사례를 질환별로 모아 규칙과 학습 데이터를 보강하고, 짧은 신고는 더 일찍 위급으로" },
-  { lt: "신고 접수·병원 연결은 아직 가정", ld: "신고를 ERLink로 받는다고 가정했고, 오늘 시연의 병원 응답은 발표자가 대신 누름", pt: "119·병원과 바로 연결", pd: "신고 접수 체계에 붙이고, 병원 화면에서 수용 요청을 받아 승인·거절" },
-  { lt: "노트북 한 대 · 서울에서만 · 현장 검증 전", ld: "꺼지면 멈추고, 자료가 서울뿐이고, 실제 구급대원이 써 보지 않음", pt: "클라우드로 옮기고 현장에서 검증", pd: "서버 이전과 모니터링, 구급대원·상황요원 6~10명 의견 받기" },
+// 11/26 발표 전날: '못 한 것 → 할 것' 표 대신 앞으로 갈 길 3단계. 지금 상태(한계)는 칸 아래 작게
+const roadmap = [
+  { t: "더 정확하게", g: "놓친 사례를 질환별로 모아, 짧은 신고도 위급을 놓치지 않게", now: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)" },
+  { t: "실제로 연결", g: "119 신고 접수와 병원에 바로 연결해, 병원 화면에서 수용 요청을 승인·거절", now: "신고는 ERLink로 받는다고 가정, 오늘 시연의 병원 응답은 발표자가 대신 누름" },
+  { t: "현장에서", g: "클라우드로 옮기고, 구급대원·상황요원 6~10명과 현장에서 검증", now: "노트북 한 대 · 서울에서만 · 현장 검증 전" },
 ];
 
 const W = 1440;
@@ -312,12 +312,24 @@ export default function ERLink() {
         <div className="sec-row">
           <h2 id="er-lim-h" className="sec-title">
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              한계와 다음 단계
+              한계와 계획
             </span>
-            아직 못 한 것과, 다음에 할 것
+            다음 단계 로드맵
           </h2>
         </div>
-        <Nexts rows={nexts} />
+        <ol className="roadmap">
+          {roadmap.map((r, i) => (
+            <li key={r.t}>
+              <span className="rm-t">
+                <span className="mono">{["①", "②", "③"][i]}</span> {r.t}
+              </span>
+              <span className="rm-g">{r.g}</span>
+              <span className="rm-now">
+                <b>지금</b> {r.now}
+              </span>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <p className="say next">“마지막으로, 교육 초반에 외부 AI로 만든 추가 프로젝트도 짧게 보여 드리겠습니다.”</p>
