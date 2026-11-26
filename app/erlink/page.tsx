@@ -95,11 +95,11 @@ const learned = [
 ];
 
 // 한계와 다음 단계 (11/26 2차: 성과 탭에서 되돌림 · 신고 접수도 가정임을 밝힘)
-// 11/26 발표 전날: '못 한 것 → 할 것' 표 대신 앞으로 갈 길 3단계. 지금 상태(한계)는 칸 아래 작게
+// 11/26 저녁: 발표 대본 문장 그대로 (칸 제목 → 지금 → 다음)
 const roadmap = [
-  { t: "더 정확하게", g: "놓친 사례를 질환별로 모아, 짧은 신고도 위급을 놓치지 않게", now: "첫 한두 문장만으로는 위급 환자를 69%만 알아봄 (통화 30초 분량이면 90%)" },
-  { t: "실제로 연결", g: "119 신고 접수와 병원에 바로 연결해, 병원 화면에서 수용 요청을 승인·거절", now: "신고는 ERLink로 받는다고 가정, 오늘 시연의 병원 응답은 발표자가 대신 누름" },
-  { t: "현장에서", g: "클라우드로 옮기고, 구급대원·상황요원 6~10명과 현장에서 검증", now: "노트북 한 대 · 서울에서만 · 현장 검증 전" },
+  { t: "짧은 신고에도", now: "오늘 시연 영상의 신고는 위급한 단서가 분명했습니다.", next: "실제로는 한두 마디만 하고 끊기는 경우도 있습니다. 그때에도 위급을 놓치지 않게 하겠습니다." },
+  { t: "병원과 연결", now: "오늘 시연 영상의 병원 응답은 제가 대신 눌렀습니다.", next: "병원이 직접 수용 요청을 받는 화면을 만들어 ERLink와 병원을 연결하겠습니다." },
+  { t: "현장 검증", now: "ERLink는 아직 현장 구급대원의 검증을 받지 못했습니다.", next: "현장에서 직접 써 보고 검증받겠습니다." },
 ];
 
 const W = 1440;
@@ -311,10 +311,7 @@ export default function ERLink() {
       <section aria-labelledby="er-lim-h" style={{ display: "grid", gap: 16 }}>
         <div className="sec-row">
           <h2 id="er-lim-h" className="sec-title">
-            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              한계와 계획
-            </span>
-            다음 단계 로드맵
+            한계와 계획
           </h2>
         </div>
         <ol className="roadmap">
@@ -323,9 +320,11 @@ export default function ERLink() {
               <span className="rm-t">
                 <span className="mono">{["①", "②", "③"][i]}</span> {r.t}
               </span>
-              <span className="rm-g">{r.g}</span>
-              <span className="rm-now">
-                <b>지금</b> {r.now}
+              <span className="rm-row rm-today">
+                <b>지금</b> <span>{r.now}</span>
+              </span>
+              <span className="rm-row rm-next">
+                <b>다음</b> <span>{r.next}</span>
               </span>
             </li>
           ))}
