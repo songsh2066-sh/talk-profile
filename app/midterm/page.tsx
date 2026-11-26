@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import PageHead, { Cue } from "@/components/PageHead";
 import Pager from "@/components/Pager";
-import Nexts from "@/components/Nexts";
 import { links } from "@/data/talk";
 
 export const metadata: Metadata = { title: "중간평가 · 서울 메이트" };
@@ -31,9 +30,7 @@ const pair = [
 ];
 
 // 한계와 다음 단계 (11/26 2차: 성과 탭에서 프로젝트 끝으로 되돌림)
-const nexts = [
-  { lt: "여러 곳 비교 질문에 약함", ld: "“어디가 제일 한산해?” 같은 질문은 0~2/6", pt: "비교 질문 보강", pd: "장소별 값을 코드가 먼저 비교하고, 모델은 결과를 설명만" },
-];
+// 11/26 발표 전날: '한계와 다음 단계' 대신 '아쉬운 점' 한 문장. 더 큰 모델과 비교한 적은 없어 '작아서 안 됐다'고 단정하지 않음
 
 // 최종 성능표 (같은 100문항, 공정 채점)
 const rows = [
@@ -196,13 +193,37 @@ export default function Midterm() {
       <section aria-labelledby="mt-lim-h" style={{ display: "grid", gap: 16 }}>
         <div className="sec-row">
           <h2 id="mt-lim-h" className="sec-title">
-            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              한계와 다음 단계
-            </span>
-            아직 못 한 것과, 다음에 할 것
+            아쉬운 점
           </h2>
         </div>
-        <Nexts rows={nexts} />
+        <div className="panel">
+          <p className="say">
+            작은 모델을 큰 모델만큼 쓸 만하게 만들고 싶었지만, 노트북 성능의 한계로 큰 모델과 나란히 시험해 보지 못해,{" "}
+            <span className="hl">얼마나 따라잡았는지 확인하지 못한 것</span>이 아쉽습니다.
+          </p>
+          <div className="mt-gap" role="img" aria-label="정확도: 지금 서비스 70%, 더 큰 모델은 노트북에서 돌릴 수 없어 재 보지 못함">
+            <div className="mt-gap-row">
+              <span className="mt-gap-k">
+                <b>지금 서비스</b>
+                <small>seoulmate-1.7b + 검색 자료 · 노트북</small>
+              </span>
+              <span className="mt-gap-bar">
+                <i style={{ width: "70%" }} />
+              </span>
+              <span className="mt-gap-v">70%</span>
+            </div>
+            <div className="mt-gap-row is-unknown">
+              <span className="mt-gap-k">
+                <b>더 큰 모델</b>
+                <small>노트북에서 돌릴 수 없어 재 보지 못함</small>
+              </span>
+              <span className="mt-gap-bar">
+                <i>?</i>
+              </span>
+              <span className="mt-gap-v">?</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <p className="say next">“작은 모델도 자료와 학습을 더하면 70%까지 오르는 걸 확인했고, 이번엔 틀리면 안 되는 문제에 써 봤습니다.”</p>
