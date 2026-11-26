@@ -44,12 +44,18 @@ const demo = [
 ];
 
 // 판단 단계 (ERLink LangGraph: triage → bed → route → capability → saturation → protocol → supervisor → critic → 승인(확정) → 기록)
-const agents = ["중증도", "빈 병상", "도착 시간", "병원 역량", "포화도", "근거", "순위", "검토", "사람 확정", "기록"];
-const HUMAN = "사람 확정";
+// 11/26 발표 전날: 10단계를 '사람이 병원을 고를 때 묻는 순서' 4묶음으로 (설명하기 쉽게)
+const agentGroups = [
+  { q: "얼마나 위급한가?", steps: ["중증도"], d: "신고를 읽고 등급을 정함" },
+  { q: "어디로 갈 수 있나?", steps: ["빈 병상", "도착 시간", "병원 역량", "포화도"], d: "자리가 있고, 가깝고, 필요한 처치가 되고, 덜 붐비는 병원" },
+  { q: "왜 이 병원인가?", steps: ["근거", "순위", "검토"], d: "법 조문을 찾아 붙이고, 점수로 3곳을 고른 뒤 마지막 점검" },
+  { q: "결정은 사람이", steps: ["사람 확정", "기록"], d: "병원 승인 + 구급대원 확정 없이는 끝나지 않음", human: true },
+];
 
 // 11/25 사용자 결정: '내가 만든 것' → '기술 → ERLink에 적용한 방법 → 확인한 결과'
 //   (11/26: 화면에서 '교육에서 배운 것' 표현은 빼고, 마무리 한 줄에만 교육 언급을 남김 — 사용자 결정)
 //   (11/25: ERLink 에서는 중간평가에서 쓴 것을 설명하지 않음 — 사용자 결정)
+//   (11/26 발표 전날: 하이브리드·평가 설명을 쉬운 말로, 배포 · 운영 줄은 뺌 — 사용자 결정)
 const learned = [
   {
     t: "파인튜닝",
@@ -68,7 +74,7 @@ const learned = [
   },
   {
     t: "하이브리드 설계",
-    how: ["규칙이 기본이고 ", "모델은 등급을 올리기만", " 합니다. 도착 시간과 점수 같은 계산은 코드가 맡습니다."],
+    how: ["규칙과 AI가 따로 판단하고, ", "둘 중 더 위급하게 본 쪽", "을 따릅니다. AI가 틀려도 환자를 가볍게 보지 않습니다."],
     chips: ["규칙 + 모델", "OSRM 도로망", "가중 점수"],
     v: "0건",
     vl: "위급 환자를 경증으로 본 경우",
@@ -82,17 +88,10 @@ const learned = [
   },
   {
     t: "평가로 증명",
-    how: ["학습에 쓰지 않은 평가셋을 먼저 떼어 두고, 바꿀 때마다 ", "같은 기준으로 다시 쟀습니다", "."],
+    how: ["119 신고 일부를 ", "처음부터 따로 빼 두고", ", 학습에는 쓰지 않았습니다. 규칙을 고치거나 모델을 다시 학습할 때마다 그 신고로 같은 기준으로 테스트했습니다."],
     chips: ["서울 평가용 1.87만 건", "원칙 검사 714건"],
     v: "53→90%",
     vl: "위급 환자 알아본 비율",
-  },
-  {
-    t: "배포 · 운영",
-    how: ["서비스를 ", "Docker Compose로 한 번에", " 띄우고, 올릴 때마다 시험이 돌게 했습니다. 공개 주소는 Cloudflare Tunnel로 붙였습니다."],
-    chips: ["FastAPI · Next.js", "PostgreSQL · Redis", "GitHub Actions"],
-    v: "669",
-    vl: "자동 시험 · CI 통과",
   },
 ];
 
@@ -121,16 +120,22 @@ export default function ERLink() {
       <section className="split" aria-label="문제">
         <div style={{ display: "grid", gap: 20 }}>
           <PageHead path="/erlink" status="동작 중 · erlink.songsh.cloud" meta="메인 프로젝트 · 개인" title="ERLink AI">
-            신고부터 이송 병원 확정까지, <span className="hl">상황실 AI가 신고자와 구급대원을 돕는</span> 서비스. 신고자에게는 묻고
-            응급처치를 안내하고, 구급대원에게는 병원 3곳을 도착 시간·빈 병상·법 조문 근거와 함께 추천합니다. 확정은 구급대원이 합니다.
+            신고부터 이송 병원 확정까지, <span className="hl">상황실 AI가 신고자와 구급대원을 돕는</span> 서비스. 신고자에게는 응급처치를
+            안내하고, 구급대원에게는 병원 3곳을 근거와 함께 추천합니다. 최종 확정은 구급대원이 합니다.
           </PageHead>
           <div className="panel">
             <Cue>문제</Cue>
-            <p className="say">어느 응급실이 받을 수 있는지 모른 채, 병원에 차례로 전화를 돌립니다.</p>
-            <p className="body">
-              거절되면 다음 병원에 다시 걸고, 그동안 환자는 구급차 안에서 기다립니다. 빈 병상과 병원 역량 정보는 공공 데이터에 이미
-              있지만, 그걸로 <b>어느 병원에 먼저 요청할지</b> 근거와 함께 정해 주는 도구가 없었습니다.
-            </p>
+            <p className="say">병원을 찾는 동안, 환자는 기다리기만 하고 구급대원은 전화를 돌리기만 합니다.</p>
+            <ul className="prob">
+              <li>
+                <b>신고자</b>
+                <span>환자 곁에서 지금 무엇을 해야 하는지, 병원이 정해졌는지 바로 알기 어렵습니다.</span>
+              </li>
+              <li>
+                <b>구급대원</b>
+                <span>어느 응급실이 받을 수 있는지 확인하느라 병원에 차례로 전화를 겁니다. 거절되면 다시 겁니다.</span>
+              </li>
+            </ul>
           </div>
         </div>
         <figure className="phones">
@@ -237,7 +242,7 @@ export default function ERLink() {
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
               기술과 결과
             </span>
-            교육에서 배운 RAG·파인튜닝·하이브리드를, 사람 생명이 걸린 문제에 맞게 더 엄격하게 적용했습니다
+            핵심은 Multi-Agent, 각 단계는 RAG·파인튜닝으로 더 엄격하게
           </h2>
           <span className="note">개인 프로젝트 · 기획부터 배포까지</span>
         </div>
@@ -249,15 +254,25 @@ export default function ERLink() {
             </div>
             <span className="learn-tag">Multi-Agent</span>
           </div>
-          <ol className="agentai-flow">
-            {agents.map((a) => (
-              <li key={a} className={a === HUMAN ? "is-human" : undefined}>
-                {a}
+          <ol className="agentai-groups">
+            {agentGroups.map((g, i) => (
+              <li key={g.q} className={g.human ? "is-human" : undefined}>
+                <span className="ag-q">
+                  <span className="mono">{["①", "②", "③", "④"][i]}</span> {g.q}
+                </span>
+                <span className="ag-steps">
+                  {g.steps.map((s) => (
+                    <span key={s} className="ag-step">
+                      {s}
+                    </span>
+                  ))}
+                </span>
+                <span className="ag-d">{g.d}</span>
               </li>
             ))}
           </ol>
           <p className="agentai-one">
-            에이전트마다 한 가지 일만 맡아 단계마다 근거를 남기고, <b>‘사람 확정’에서 멈춰 병원 승인과 구급대원 확정 없이는 끝나지 않습니다.</b>
+            <b>AI 하나가 다 하지 않고 일을 10개로 나눴습니다.</b> 그래서 단계마다 근거가 남고, 틀리면 어디서 틀렸는지 찾을 수 있습니다.
           </p>
         </div>
         <div className="learned" role="table" aria-label="ERLink에 쓴 기술과 확인한 결과">
