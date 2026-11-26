@@ -58,7 +58,7 @@ const agentGroups = [
 const learned = [
   {
     t: "파인튜닝",
-    how: ["119 신고 8.6만 건으로 ", "KoELECTRA를 중증도 분류에 파인튜닝", ". 위급 환자를 낮게 보는 실수에 더 큰 벌점을 줬습니다."],
+    how: ["119 신고 8.6만 건으로 ", "중증도 분류에 파인튜닝", ", 위급 환자 과소평가율을 줄임"],
     chips: ["KoELECTRA-small", "비대칭 손실", "AI Hub 119 신고"],
     v: "11.9→2.5%",
     vl: "위급 환자 과소평가",
@@ -66,31 +66,24 @@ const learned = [
   },
   {
     t: "RAG",
-    how: ["법령 6개와 응급 지침을 조문 단위로 나눠 ", "단어 검색 + 뜻 검색을 함께", " 쓰고 순위를 합쳤습니다. 추천마다 근거 조문이 붙습니다."],
+    how: ["법령 6개와 응급 지침을 조문 단위로 나눠 두고, ", "추천마다 근거가 되는 법 조문", "을 찾아 붙입니다."],
     chips: ["BM25 + e5 임베딩", "RRF", "pgvector"],
     v: "100%",
     vl: "추천 근거 조문 인용률",
   },
   {
     t: "하이브리드 설계",
-    how: ["규칙과 AI가 따로 판단하고, ", "둘 중 더 위급하게 본 쪽", "을 따릅니다. AI가 틀려도 환자를 가볍게 보지 않습니다."],
+    how: ["규칙과 AI가 따로 판단하고, ", "둘 중 더 위급하게 본 쪽", "을 따릅니다."],
     chips: ["규칙 + 모델", "OSRM 도로망", "가중 점수"],
     v: "0건",
     vl: "위급 환자를 경증으로 본 경우",
   },
   {
     t: "소버린 AI · 로컬",
-    how: ["중증도 판단, 음성 인식, 지도까지 ", "모두 제 노트북 안에서 돌아갑니다", ". 외부 AI를 쓰지 않아 환자 정보가 밖으로 나가지 않습니다."],
+    how: ["중증도 판단, 음성 인식, 지도까지 ", "모두 제 로컬에서 돌아갑니다", ". 외부 AI를 쓰지 않아 환자 정보가 밖으로 나가지 않습니다."],
     chips: ["ONNX int8", "faster-whisper", "자체 서울 지도"],
     v: "14.7MB · 3ms",
     vl: "모델 크기 · 판단 시간",
-  },
-  {
-    t: "평가로 증명",
-    how: ["119 신고 일부를 ", "처음부터 따로 빼 두고", ", 학습에는 쓰지 않았습니다. 규칙을 고치거나 모델을 다시 학습할 때마다 그 신고로 같은 기준으로 테스트했습니다."],
-    chips: ["서울 평가용 1.87만 건", "원칙 검사 714건"],
-    v: "53→90%",
-    vl: "위급 환자 알아본 비율",
   },
 ];
 
@@ -99,7 +92,7 @@ const learned = [
 const roadmap = [
   { t: "짧은 신고에도", now: "오늘 시연 영상의 신고는 위급한 단서가 분명했습니다.", next: "실제로는 한두 마디만 하고 끊기는 경우도 있습니다. 그때에도 위급을 놓치지 않게 하겠습니다." },
   { t: "병원과 연결", now: "오늘 시연 영상의 병원 응답은 제가 대신 눌렀습니다.", next: "병원이 직접 수용 요청을 받는 화면을 만들어 ERLink와 병원을 연결하겠습니다." },
-  { t: "현장 검증", now: "ERLink는 아직 현장 구급대원의 검증을 받지 못했습니다.", next: "현장에서 직접 써 보고 검증받겠습니다." },
+  { t: "현장 검증", now: "ERLink는 아직 현장 구급대원의 검증을 받지 못했습니다.", next: "실제 구급대원의 의견을 받아 현장에서 쓸 수 있게 다듬겠습니다." },
 ];
 
 const W = 1440;
@@ -242,7 +235,7 @@ export default function ERLink() {
             <span className="cue" style={{ display: "block", marginBottom: 4 }}>
               기술과 결과
             </span>
-            핵심은 Multi-Agent, 각 단계는 RAG·파인튜닝으로 더 엄격하게
+            핵심은 Multi-Agent
           </h2>
           <span className="note">개인 프로젝트 · 기획부터 배포까지</span>
         </div>
@@ -275,6 +268,7 @@ export default function ERLink() {
             <b>AI 하나가 다 하지 않고 일을 10개로 나눴습니다.</b> 그래서 단계마다 근거가 남고, 틀리면 어디서 틀렸는지 찾을 수 있습니다.
           </p>
         </div>
+        <h3 className="learned-title">각 단계는 RAG와 파인튜닝으로 더 엄격하게</h3>
         <div className="learned" role="table" aria-label="ERLink에 쓴 기술과 확인한 결과">
           <div className="learned-row is-head" role="row">
             <span role="columnheader">기술</span>
@@ -311,7 +305,7 @@ export default function ERLink() {
       <section aria-labelledby="er-lim-h" style={{ display: "grid", gap: 16 }}>
         <div className="sec-row">
           <h2 id="er-lim-h" className="sec-title">
-            한계와 계획
+            앞으로의 계획
           </h2>
         </div>
         <ol className="roadmap">

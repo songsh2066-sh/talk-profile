@@ -276,6 +276,7 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 .agentai-one { font-size: 15px; line-height: 1.6; color: var(--ink-2); }
 .agentai-one b { color: var(--ink); }
 .learned { display: grid; }
+.learned-title { margin: 16px 0 -8px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.35; color: var(--ink); }
 .learned-row { display: grid; grid-template-columns: 220px minmax(0, 1fr) 190px; gap: 20px; padding: 18px 4px; border-bottom: 1px solid var(--line); align-items: start; }
 .learned-row.is-head { padding: 0 4px 10px; font-size: 12px; font-weight: 700; color: var(--muted); border-bottom: 2px solid var(--ink); }
 .learned-row.is-head span:last-child { text-align: right; }
