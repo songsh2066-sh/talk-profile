@@ -417,3 +417,28 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 .proj-tag { justify-self: start; font-size: 11.5px; font-weight: 700; color: var(--muted); background: var(--paper-2); border-radius: 999px; padding: 2px 8px; }
 .nexts-arrow.is-tagged, .nexts-plan.is-tagged { padding-top: 24px; }
 @media (max-width: 760px) { .nexts-plan.is-tagged { padding-top: 0; } }
+
+/* ERLink 전체 흐름 11/26: 상황실 AI를 가운데에 (신고 화면 ⇄ 상황실 AI ⇄ 상황 판단 화면) */
+.hub { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr) minmax(0, 1fr); gap: 28px; align-items: stretch; }
+.hub-side { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; gap: 12px; align-content: start; }
+.hub-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.hub-head b { font-size: 17px; }
+.hub-head span { font-size: 13px; font-weight: 700; color: var(--ok); }
+.hub-side ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.hub-side li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 6px; }
+.hub-n { font-weight: 700; color: var(--muted); }
+.hub-side li b { display: block; font-size: 15px; line-height: 1.4; }
+.hub-side li small { display: block; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+.hub-ai { position: relative; display: grid; align-content: center; justify-items: center; gap: 10px; padding: 18px 14px; border-radius: 14px;
+  border: 1.5px solid var(--ok); background: var(--ok-soft); text-align: center; }
+.hub-ai > b { font-size: 18px; color: var(--ok); }
+.hub-ai ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.hub-ai li { font-size: 13px; color: var(--ink-2); }
+.hub-ai li + li::before { content: "↓"; display: block; font-size: 11px; color: var(--muted); }
+.hub-arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--ok); font-weight: 700; }
+.hub-arrow.l { left: -23px; } .hub-arrow.r { right: -23px; }
+@media (max-width: 860px) {
+  .hub { grid-template-columns: 1fr; gap: 14px; }
+  .hub-ai { order: -1; }
+  .hub-arrow { display: none; }
+}

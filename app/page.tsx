@@ -10,7 +10,7 @@ import { links, steps } from "@/data/talk";
 const built = [
   { when: "2026.10", name: "기억 탐정 AI · 서울 먹킷리스트", how: "외부 AI(API)", main: false },
   { when: "2026.11 · 중간평가", name: "서울 메이트", how: "내 노트북 작은 모델 · RAG · 파인튜닝", main: false },
-  { when: "2026.11 · 메인", name: "ERLink AI", how: "로컬 모델 · 에이전트 · 119 이송 병원 추천", main: true },
+  { when: "2026.11 · 메인", name: "ERLink AI", how: "상황실 AI · 신고부터 이송 병원 확정까지", main: true },
 ];
 
 // 사용한 기술 (세 프로젝트에서 실제로 쓴 것)
@@ -55,7 +55,7 @@ export default function Home() {
 
           <aside className="agenda" aria-labelledby="agenda-h">
             <div className="agenda-head">
-              <h2 id="agenda-h">오늘 발표 · 15분</h2>
+              <h2 id="agenda-h">오늘 발표</h2>
               <span className="note">메뉴 순서 = 발표 순서</span>
             </div>
             <ol>

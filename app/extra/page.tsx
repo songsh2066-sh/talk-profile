@@ -6,7 +6,7 @@ import { links } from "@/data/talk";
 
 export const metadata: Metadata = { title: "추가 프로젝트" };
 
-// 04 추가 프로젝트 (합계 1분, 11/25 개편) — 교육 기간 동안 만든 것 3개 (사용자가 준 순서: 기억 탐정 → 서울 메이트 → 웹 이력서)
+// 04 추가 프로젝트 (11/26 2차: ERLink 뒤 네 번째로 되돌림 · 이름도 추가 프로젝트로 되돌림 · 웹 이력서는 교육 기간 전이라 뺌) — 예전: 04 추가 프로젝트 (합계 1분, 11/25 개편) — 교육 기간 동안 만든 것 3개 (사용자가 준 순서: 기억 탐정 → 서울 메이트 → 웹 이력서)
 //   서울 먹킷리스트(나들이·맛집 코스, seoulmate-six.vercel.app — 11/26 이름 변경)는 중간평가의 서울 메이트(혼잡도 안내)와 다른 프로젝트
 //   내용 출처: 각 사이트와 웹 이력서의 프로젝트 기록 (11/25 확인)
 type Project = {
@@ -54,28 +54,13 @@ const projects: Project[] = [
     host: "seoulmate-six.vercel.app",
     shot: { src: "/projects/seoulmate-trip.webp", alt: "서울 먹킷리스트 첫 화면: 오늘은 어디로 갈까? 지금 가기 좋은 먹자골목 6곳과 실시간 장소 121곳", w: 1000, h: 822 },
   },
-  {
-    name: "웹 이력서 플랫폼",
-    when: "배포됨",
-    one: "경력 원장 기반 AI 이력서 플랫폼의 제안서·PRD를 쓰고, 공개 이력서 페이지를 Next.js로 만들어 Vercel에 배포.",
-    facts: [
-      { v: "2", l: "언어 (KO · EN)" },
-      { v: "PDF", l: "인쇄용 이력서 레이아웃" },
-      { v: "PRD", l: "제안서 · 요구사항 문서" },
-    ],
-    tech: ["Next.js", "TypeScript", "Vercel"],
-    href: links.oldProfile,
-    cta: "사이트 보기 ↗",
-    host: "web-resume-bice.vercel.app",
-    shot: { src: "/projects/web-resume.webp", alt: "웹 이력서 첫 화면: 송상헌, 확인한 데이터로만 답하는 AI 에이전트를 만듭니다, 검증 기록과 대표 수치", w: 1000, h: 623 },
-  },
 ];
 
 export default function Extra() {
   return (
     <main id="main" className="wrap page">
-      <PageHead path="/extra" title="교육 기간 동안 만든 것들">
-        무엇을 만들었고, 무엇을 확인했는지만.
+      <PageHead path="/extra" title="추가 프로젝트">
+        교육 초반, 외부 AI(API)로 만든 것들.
       </PageHead>
 
       <section className="grid-3" aria-label="추가 프로젝트">
@@ -128,6 +113,8 @@ export default function Extra() {
           </article>
         ))}
       </section>
+
+      <p className="say next">“처음에는 외부 AI가 답했다면, 지금은 제 노트북의 작은 모델이 근거를 붙여 답합니다.”</p>
 
       <Pager path="/extra" />
     </main>

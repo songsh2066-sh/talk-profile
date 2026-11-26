@@ -2,26 +2,19 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import PageHead, { Cue } from "@/components/PageHead";
 import Pager from "@/components/Pager";
+import Nexts from "@/components/Nexts";
 import { links } from "@/data/talk";
 
 export const metadata: Metadata = { title: "중간평가 · 서울 메이트" };
 
 // 02 중간평가 (3분) — 11/26 개편 (도안: 발표용 프로필 사이트 시안 MidtermV2)
-//   목표 → 전체 흐름 → 라이브 시연 4단계(qwen3 자료 없음 vs seoulmate) → 결과(최종 성능표 4줄) → ERLink 로
+//   목표 → 라이브 시연 4단계 (11/26: 전체 흐름 상자는 뺌 — 시연 입장 화면과 n8n 기록이 대신 보여 줌)(qwen3 자료 없음 vs seoulmate) → 결과(최종 성능표 4줄) → ERLink 로
 //   발표 대본이 따로 없어서, 블록마다 굵은 글 = 말할 핵심, 작은 글 = 덧붙일 설명으로 씁니다.
 //   발표 시간 배분(화면에는 표시 안 함): 목표 20초 · 흐름 20초 · 라이브 시연 1분 30초 · 결과 40초 · 마무리 10초
 //   성능표 출처(같은 100문항 · 공정 채점 v2): Lite LLM project/results
 //     - 자료 없음(qwen3:1.7b · seoulmate-1.7b): final_eval_20261125235823 (data/ft/final_eval100_noctx_20261125235705.jsonl)
 //     - 검색 자료(RAG) 붙임(qwen3:1.7b · seoulmate-1.7b): final_eval_20261123172213
 //   seoulmate-1.7b = 지금 서비스 중인 v4 (70%). v3 75% 와 차이 없음(McNemar p=0.33), RAG만 붙인 qwen 대비 유의(p=0.03)
-
-// 질문 하나가 지나가는 길
-const flow = [
-  { n: "①", who: "수집 · n8n", t: "30분마다 서울시 자료 수집", d: "5곳의 혼잡도·추정 인구·12시간 예측을 모아 저장. 지금도 계속 돌고 있습니다", key: false },
-  { n: "②", who: "검색 자료 · Qdrant", t: "근거로 쓸 문서로 저장", d: "bge-m3로 임베딩하고, 질문의 장소·시각으로 찾아서 붙입니다", key: false },
-  { n: "③", who: "게이트웨이 · LiteLLM (Azure)", t: "키 검사 · 호출 제한 · 기록", d: "사람마다 다른 키. Tailscale 암호화 터널로만 내 노트북에 연결됩니다", key: false },
-  { n: "④", who: "답변 · 내 노트북 Ollama", t: "seoulmate-1.7b가 근거로 답함", d: "Qwen3-1.7B를 직접 파인튜닝. 숫자 계산과 개인정보 차단은 코드가 맡습니다", key: true },
-];
 
 // 라이브 시연 순서 (b = 할 일, s = 짚을 말)
 const demo = [
@@ -35,6 +28,11 @@ const demo = [
 const pair = [
   { src: "/shots/mt-demo-qwen.webp", alt: "일반 채팅 qwen3:1.7b의 답: 강남역은 여전히 붐벼요. 답 아래 자료 검색 없음(일반 채팅)", w: 394, h: 426, cap: "qwen3:1.7b · 자료 없음", pick: false },
   { src: "/shots/mt-demo-seoulmate.webp", alt: "서울 메이트 seoulmate-1.7b의 답: 아니요, 지금 강남역은 한산한 편이에요. 11월 25일 23시 50분 기준 여유, 추정 인구 26,000~28,000명. 근거 강남역 23:50 기준", w: 399, h: 492, cap: "seoulmate-1.7b · 근거와 함께", pick: true },
+];
+
+// 한계와 다음 단계 (11/26 2차: 성과 탭에서 프로젝트 끝으로 되돌림)
+const nexts = [
+  { lt: "여러 곳 비교 질문에 약함", ld: "“어디가 제일 한산해?” 같은 질문은 0~2/6", pt: "비교 질문 보강", pd: "장소별 값을 코드가 먼저 비교하고, 모델은 결과를 설명만" },
 ];
 
 // 최종 성능표 (같은 100문항, 공정 채점)
@@ -69,29 +67,6 @@ export default function Midterm() {
           <Image src="/shots/mt-today.webp" alt="서울 메이트 오늘의 서울: 5곳의 지금 혼잡도와 앞으로 12시간 예상 인구 막대" width={980} height={951} sizes="(max-width: 920px) 100vw, 520px" priority />
           <figcaption>‘오늘의 서울’ — 장소마다 지금 혼잡도와 앞으로 12시간 예측 막대 (11/24 16:20 기준)</figcaption>
         </figure>
-      </section>
-
-      {/* ── 전체 흐름 ── */}
-      <section aria-labelledby="mt-flow-h" style={{ display: "grid", gap: 16 }}>
-        <div className="sec-row">
-          <h2 id="mt-flow-h" className="sec-title">
-            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
-              전체 흐름
-            </span>
-            질문은 내 게이트웨이를 지나 내 노트북 모델이 답합니다
-          </h2>
-        </div>
-        <ol className="roles">
-          {flow.map((f) => (
-            <li key={f.n} className={f.key ? "role is-ai" : "role"}>
-              <span className="role-who">
-                <span className="mono">{f.n}</span> {f.who}
-              </span>
-              <b>{f.t}</b>
-              <p>{f.d}</p>
-            </li>
-          ))}
-        </ol>
       </section>
 
       {/* ── 라이브 시연 ── */}
@@ -215,8 +190,22 @@ export default function Midterm() {
         <p className="mt-takeaway">
           RAG가 사실을 주고, 파인튜닝이 그 사실을 읽는 법과 말투를 다듬습니다. <span className="hl">둘을 합쳐야 사실에 가깝게 답합니다.</span>
         </p>
-        <p className="say next">“여기서 익힌 RAG·파인튜닝·평가 방식을, 사람 생명이 걸린 문제에 적용한 것이 다음 프로젝트 ERLink입니다.”</p>
       </section>
+
+      {/* ── 한계와 다음 단계 (11/26 2차) ── */}
+      <section aria-labelledby="mt-lim-h" style={{ display: "grid", gap: 16 }}>
+        <div className="sec-row">
+          <h2 id="mt-lim-h" className="sec-title">
+            <span className="cue" style={{ display: "block", marginBottom: 4 }}>
+              한계와 다음 단계
+            </span>
+            아직 못 한 것과, 다음에 할 것
+          </h2>
+        </div>
+        <Nexts rows={nexts} />
+      </section>
+
+      <p className="say next">“작은 모델도 자료와 학습을 더하면 70%까지 오르는 걸 확인했고, 이번엔 틀리면 안 되는 문제에 써 봤습니다.”</p>
 
       <Pager path="/midterm" />
     </main>

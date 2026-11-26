@@ -1,4 +1,5 @@
-// 발표 순서 = 메뉴 순서 (서울시립대 실전 AI 과정 15분 발표 구성표 — 11/25 개편: 1·3·7·1·3분)
+// 발표 순서 = 메뉴 순서 (11/26 사용자 결정 2차: 소개 → 중간평가 → ERLink → 추가 프로젝트 → 마무리, 약 10분 — 구성표는 참고용)
+//   성과 탭은 마무리 탭으로 바꾸고, 한계와 다음 단계는 두 프로젝트 페이지 끝으로 되돌림
 // 순서·시간·이름을 바꾸려면 여기만 고치면 메뉴, 이전·다음 버튼, ←→ 키 이동이 함께 바뀝니다.
 export type Step = {
   no: string;
@@ -11,11 +12,11 @@ export type Step = {
 };
 
 export const steps: Step[] = [
-  { no: "01", path: "/", label: "소개", title: "홈 · 자기소개", minutes: 1, range: "0:00–1:00", summary: "관심 분야와 오늘 소개할 프로젝트" },
-  { no: "02", path: "/midterm", label: "중간평가", title: "중간평가 · 서울 메이트", minutes: 3, range: "1:00–4:00", summary: "외부 AI 없이 작은 모델로 혼잡도 맞히기 · 0% → 70% · 시연" },
-  { no: "03", path: "/erlink", label: "ERLink", title: "메인 프로젝트 · ERLink AI", minutes: 7, range: "4:00–11:00", summary: "119 이송 병원 추천 — 신고부터 병원 승인까지 라이브 시연 · 기술과 결과" },
-  { no: "04", path: "/extra", label: "추가 프로젝트", title: "추가 프로젝트", minutes: 1, range: "11:00–12:00", summary: "기억 탐정 AI · 서울 먹킷리스트 · 웹 이력서 플랫폼" },
-  { no: "05", path: "/results", label: "성과", title: "성과 · 마무리", minutes: 3, range: "12:00–15:00", summary: "무엇을 달성했고 어떻게 확인했는지" },
+  { no: "01", path: "/", label: "소개", title: "홈 · 자기소개", minutes: 1, range: "0:00–0:50", summary: "관심 분야와 오늘 소개할 프로젝트" },
+  { no: "02", path: "/midterm", label: "중간평가", title: "중간평가 · 서울 메이트", minutes: 2, range: "0:50–3:00", summary: "외부 AI 없이 작은 모델로 혼잡도 맞히기 · 0% → 70% · 시연" },
+  { no: "03", path: "/erlink", label: "ERLink", title: "메인 프로젝트 · ERLink AI", minutes: 5, range: "3:00–8:00", summary: "상황실 AI · 신고부터 이송 병원 확정까지 · 라이브 시연" },
+  { no: "04", path: "/extra", label: "추가 프로젝트", title: "추가 프로젝트", minutes: 1, range: "8:00–8:50", summary: "기억 탐정 AI · 서울 먹킷리스트 — 외부 AI(API)로 만든 것" },
+  { no: "05", path: "/results", label: "마무리", title: "마무리", minutes: 1, range: "8:50–9:30", summary: "한 줄 정리와 감사 인사" },
 ];
 
 export const links = {
