@@ -51,6 +51,7 @@ export default function Home() {
               </a>
             </div>
             <p className="hero-meta">소프트웨어·빅데이터 전공 · 서울시립대학교 AI Agent 과정 참여 중</p>
+            <p className="hero-note">오늘은 저에 대한 소개보다는, 이번 교육 과정에서 무엇을 배우고 어떤 프로젝트를 만들었는지 보여드리겠습니다.</p>
           </div>
 
           <aside className="agenda" aria-labelledby="agenda-h">

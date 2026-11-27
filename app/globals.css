@@ -395,6 +395,7 @@ table.cmp { width: 100%; min-width: 760px; border-collapse: collapse; font-size:
 
 /* ── 홈 11/26 개편: 전공·과정 한 줄 · 교육 기간 동안 만든 프로젝트 · 사용한 기술 ── */
 .hero-meta { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); max-width: 36em; font-size: 14px; color: var(--muted); }
+.hero-note { margin: 8px 0 0; max-width: 36em; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
 .tl { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 860px) { .tl { grid-template-columns: 1fr; } }
 .tl-item { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; position: relative; }
